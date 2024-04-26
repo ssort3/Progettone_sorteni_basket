@@ -5,6 +5,7 @@
 package com.mycompany.progettone_basket;
 
 import Eccezioni.*;
+import Utilita.Menu;
 import java.io.Serializable;
 
 /**
@@ -125,7 +126,24 @@ public class Squadra implements Serializable
         
     }
     
-    
+    public void modificaCestista(int id) throws EccezioneIDNonPresente
+    {
+        int sceltaUtente=0;
+        String[] voci={"Nome","Cognome","Data di nascita","altezza"};
+        Menu m;
+        
+        for(int i=0;i<nCestistiPresenti;i++)
+        {
+            if(rosa[i].getIDCestista()==id)
+            {
+                System.out.println(rosa[i].toString());
+                m=new Menu(voci);
+                sceltaUtente=m.sceltaMenu();
+                return;
+            }     
+        }
+        throw new EccezioneIDNonPresente();
+    }
     
     
     
