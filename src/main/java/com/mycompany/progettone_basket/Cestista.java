@@ -52,6 +52,7 @@ public class Cestista implements Serializable
 
     public String getNome() 
     {
+        
         return nome;
     }
 
