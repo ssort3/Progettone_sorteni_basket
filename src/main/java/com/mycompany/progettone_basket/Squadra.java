@@ -5,8 +5,15 @@
 package com.mycompany.progettone_basket;
 
 import Eccezioni.*;
+import Utilita.ConsoleInput;
 import Utilita.Menu;
+import Utilita.Ordinatore;
+import static Utilita.Ordinatore.scambia;
+import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -126,11 +133,16 @@ public class Squadra implements Serializable
         
     }
     
-    public void modificaCestista(int id) throws EccezioneIDNonPresente
+    public void modificaCestista(int id) throws EccezioneIDNonPresente, IOException
     {
         int sceltaUtente=0;
-        String[] voci={"Nome","Cognome","Data di nascita","altezza"};
+        String[] voci={"Annulla","Nome","Cognome","Data di nascita","altezza"};
         Menu m;
+        String nome,cognome;
+        double altezza;
+        int gg,mm,aaaa;
+        LocalDate dataNascita;
+        ConsoleInput tastiera=new ConsoleInput();
         
         for(int i=0;i<nCestistiPresenti;i++)
         {
@@ -139,10 +151,64 @@ public class Squadra implements Serializable
                 System.out.println(rosa[i].toString());
                 m=new Menu(voci);
                 sceltaUtente=m.sceltaMenu();
+                switch (sceltaUtente) 
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        System.out.print("Nuovo nome-->");
+                        nome=tastiera.readString();
+                        rosa[i].setNome(nome);
+                        break;
+                    case 2:
+                        System.out.print("Nuovo cognome-->");
+                        cognome=tastiera.readString();
+                        rosa[i].setCognome(cognome);
+                        break;
+                    case 3:
+                        System.out.println("Nuova data:");
+                        System.out.print("GG-->");
+                        gg=tastiera.readInt();
+                        System.out.print("MM-->");
+                        mm=tastiera.readInt();
+                        System.out.print("AAAA-->");
+                        aaaa=tastiera.readInt();
+                        rosa[i].setDataNascita(LocalDate.of(aaaa,mm,gg));
+                        break;
+                    case 4:
+                        break;
+
+                }
                 return;
             }     
         }
         throw new EccezioneIDNonPresente();
+    }
+    
+    public Cestista[] ordinaAltezzaCrescente(Squadra s)
+    {
+        //creo una copia di "s" e lo chiamo "vOrdinato"
+        Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
+        for(int i=0;i<getNCestistiPresenti();i++)
+        {
+            try 
+            {
+                vOrdinato[i]=s.getCestista(i);
+            } 
+            catch (EccezioneIDNonPresente ex) 
+            {
+                //non fare nulla
+            }
+        }
+        for(int i=0;i<getNCestistiPresenti()-1;i++)
+        {
+            for(int j=i+1;j<getNCestistiPresenti();j++)
+            {
+                if(vOrdinato[j].getAltezza()<vOrdinato[i].getAltezza())
+                    Ordinatore.scambiaCestista(vOrdinato, i, j);
+            }
+        }
+        return vOrdinato;
     }
     
     
