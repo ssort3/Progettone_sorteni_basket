@@ -67,6 +67,8 @@ public class Squadra implements Serializable
 
     public void setPunti(int punti)
     {
+        if(punti<0)
+            this.punti=0;
         this.punti=punti;
     }
 

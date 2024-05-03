@@ -4,6 +4,7 @@
  */
 package com.mycompany.progettone_basket;
 
+import Eccezioni.EccezioneAltezza;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -21,7 +22,7 @@ public class Cestista implements Serializable
     private double altezza;
     private static int nextID=1;
 
-    public Cestista(String nome, String cognome, LocalDate dataNascita, double altezza) 
+    public Cestista(String nome, String cognome, LocalDate dataNascita, double altezza) throws EccezioneAltezza 
     {
         setIDCestista();
         setNome(nome);
@@ -86,8 +87,10 @@ public class Cestista implements Serializable
         return altezza;
     }
 
-    public void setAltezza(double altezza) 
+    public void setAltezza(double altezza) throws EccezioneAltezza 
     {
+        if(altezza<1.70)
+            throw new EccezioneAltezza();
         this.altezza = altezza;
     }
 

@@ -4,6 +4,7 @@
 
 package com.mycompany.progettone_basket;
 
+import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneIDNonPresente;
 import Eccezioni.EccezioneRosaCompleta;
 import Utilita.ConsoleInput;
@@ -19,18 +20,19 @@ import java.util.logging.Logger;
  */
 public class App {
 
-    public static void main(String[] args) throws EccezioneRosaCompleta, EccezioneIDNonPresente 
+    public static void main(String[] args)
     {
-        Squadra s1=new Squadra("ciao",23);
+       /* Squadra s1=new Squadra("ciao",23);
         Cestista c1=new Cestista("lao","lao",LocalDate.of(2000,2,2),1.92);
         Cestista c2=new Cestista("lao","lao",LocalDate.of(2000,3,3),1.93);
         Cestista c3=new Cestista("lao","lao",LocalDate.of(2000,4,4),1.94);
-        Cestista cest;
+        
+        
+        
         
         s1.setCestista(c1);
         s1.setCestista(c2);
-        s1.setCestista(c3);
-        
+        s1.setCestista(c3);*/        
         /*cest=new Cestista(s1.getCestista(1));
         System.out.println(s1.toString());
         System.out.println(cest.toString());
@@ -38,9 +40,14 @@ public class App {
         s1.rimuoviCestista(2);
         System.out.println(s1.toString());*/
         
+        Campionato NBA=new Campionato();
+        Cestista cest;
         int attore=0;
         int sceltaUtente=0;
-        int id;
+        int id,gg,mm,aaaa,pti;
+        double h;
+        String nome,cognome;
+        Squadra sq;
         ConsoleInput tastiera=new ConsoleInput();
         String[] voci={"Esci","Amministatore","Telespettatore"};
         Menu m=new Menu(voci);
@@ -75,17 +82,111 @@ public class App {
                                 try 
                                 {
                                     id=tastiera.readInt();
-                                    System.out.println(); //getSquadra()
+                                    sq=NBA.getSquadra(id);
+                                    System.out.println(sq.toString());
                                 }
                                 catch (IOException ex) {
-                                    System.out.println("io exception");
+                                    System.out.println("Errore nell'inserimento");
                                 } catch (NumberFormatException ex) {
-                                    System.out.println("number format");
+                                    System.out.println("ID inserito non valido");
+                                }catch(EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("L'ID inserito non è presente nel campionato");
+                                }
+                            case 3:
+                               System.out.print("Inserisci ID cestista da visualizzare-->");
+                                try 
+                                {
+                                    id=tastiera.readInt();
+                                    cest=NBA.getCestista(id);
+                                    System.out.println(cest.toString());
+                                }
+                                catch (IOException ex) {
+                                    System.out.println("Errore nell'inserimento");
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("ID inserito non valido");
+                                } catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("L'ID inserito non è presente nel campionato");
+                                }
+                            case 4:  
+                                try 
+                                {
+                                    System.out.print("Inserisci id della squadra dove inserire il giocatore-->");
+                                    id=tastiera.readInt();
+                                    System.out.print("Inserisci nome-->");
+                                    nome=tastiera.readString();
+                                    System.out.print("Inserisci cognome-->");
+                                    cognome=tastiera.readString();
+                                    System.out.println("Inserisci Data di nascita(aaaa-mm-gg):");
+                                    System.out.print("Inserisci giorno-->");
+                                    gg=tastiera.readInt();
+                                    System.out.print("Inserisci mese-->");
+                                    mm=tastiera.readInt();
+                                    System.out.print("Inserisci anno-->");
+                                    aaaa=tastiera.readInt();
+                                    System.out.print("Inserisci altezza-->");
+                                    h=tastiera.readDouble();
+                                    cest=new Cestista(nome,cognome,LocalDate.of(aaaa,mm,gg),h);
+                                    NBA.setCestista(id,cest);
+                                    
+                                } 
+                                catch (IOException ex) {
+                                    System.out.println("Errore nell'inserimento dei dati");
+                                }
+                                catch(EccezioneAltezza ex)
+                                {
+                                    System.out.println("L'altezza inserita non  valida per il campionato, altezza minima 1,70 m");
+                                } 
+                                catch (EccezioneRosaCompleta ex) 
+                                {
+                                    System.out.println("La rosa della squadra è al completo, cestista non inserito");
+                                } 
+                                catch (EccezioneIDNonPresente ex) 
+                                {
+                                    System.out.println("La squadra selezionata non esiste, cestista non inserito");
+                                }
+                                catch (NumberFormatException ex)
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                            case 5:
+                                try 
+                                {
+                                    System.out.print("Inserisci nome squadra-->");
+                                    nome=tastiera.readString();
+                                    System.out.print("Inserisci punteggio-->");
+                                    pti=tastiera.readInt();
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
                                 }
                             
 
+                            case 6:
+                                try 
+                                {
+                                    System.out.print("Inserisci ID del cestista da rimuovere-->");
+                                    id=tastiera.readInt();
+                                    NBA.rimuoviCestista(id);
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                } 
+                                catch (EccezioneIDNonPresente ex) 
+                                {
+                                    System.out.println("Giocatore non trovato");
+                                }
+                            
                                 
-                        }
+                                
+                        }           
                     }while(sceltaUtente!=0);          
                     break;
                 case 2:
