@@ -22,10 +22,10 @@ import java.util.logging.Logger;
 public class Squadra implements Serializable
 {
     private int nCestistiPresenti;
-    private final int N_MAX_CESTISTI=30;
+    private final int N_MAX_CESTISTI=15;
     private Cestista[] rosa;
     private int idSquadra;
-    private int nextID;
+    private int nextID=1;
     private String nomeSquadra;
     private int punti;
 
@@ -89,7 +89,7 @@ public class Squadra implements Serializable
     @Override
     public String toString() 
     {
-        String s="";
+        String s=nomeSquadra+"\n";
         for(int i=0;i<nCestistiPresenti;i++)
         { 
             s+=(i+": "+rosa[i].toString()+"\n");
@@ -119,18 +119,28 @@ public class Squadra implements Serializable
         throw new EccezioneIDNonPresente();      
     }
     
-    public void rimuoviCestista(int id) throws EccezioneIDNonPresente
+    
+    public void rimuoviCestista(int id) throws EccezioneIDNonPresente, NullPointerException
     {
         for(int i=0;i<nCestistiPresenti;i++)
         {
             if(rosa[i].getIDCestista()==id)
             {
-                rosa[i]=null;
+                eliminaPosizione(i);
                 return;
             }     
         }
         throw new EccezioneIDNonPresente();
         
+    }
+    
+    public void eliminaPosizione(int pos) throws NullPointerException
+    {
+        for(int i=pos;i<nCestistiPresenti;i++)
+        {
+            rosa[i]=rosa[i+1];
+        }
+        nCestistiPresenti--;
     }
     
     public void modificaCestista(int id) throws EccezioneIDNonPresente, IOException

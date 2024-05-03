@@ -5,6 +5,7 @@
 package Utilita;
 
 import com.mycompany.progettone_basket.Cestista;
+import com.mycompany.progettone_basket.Squadra;
 
 /**
  * Classe che contiene metodi statici per ordinare dei vettori
@@ -54,6 +55,34 @@ public class Ordinatore
         v[pos1]=v[pos2];
         v[pos2]=sost;
         
+    }
+    
+    public static void scambiaSquadra(Squadra[] v, int pos1, int pos2)
+    {
+        Squadra sost=v[pos1];
+        v[pos1]=v[pos2];
+        v[pos2]=sost;
+        
+    }
+    
+    public static Squadra[] ordinaClassifica(Squadra[] camp)
+    {
+        int lunghezza=camp.length;
+        //creo una copia di "v" e lo chiamo "vOrdinato"
+        Squadra[] vOrdinato=new Squadra[lunghezza];
+        for(int i=0;i<lunghezza;i++)
+        {
+            vOrdinato[i]=camp[i];
+        }
+        for(int i=0;i<lunghezza-1;i++)
+        {
+            for(int j=i+1;j<lunghezza;j++)
+            {
+                if(vOrdinato[j].getPunti()<vOrdinato[i].getPunti())
+                    scambiaSquadra(vOrdinato,i,j);
+            }
+        }
+        return vOrdinato;
     }
     
     /**

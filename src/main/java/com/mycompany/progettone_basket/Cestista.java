@@ -17,8 +17,9 @@ public class Cestista implements Serializable
     private String cognome;
     private int idCestista;
     private LocalDate dataNascita;
+    
     private double altezza;
-    private int nextID=1;
+    private static int nextID=1;
 
     public Cestista(String nome, String cognome, LocalDate dataNascita, double altezza) 
     {
@@ -38,16 +39,15 @@ public class Cestista implements Serializable
         this.altezza=c1.getAltezza();
     }
     
-    private void setIDCestista()
-    {
-        this.idCestista=nextID;
-        nextID++;
-    }
-    
-    
     public int getIDCestista()
     {
         return idCestista;
+    }
+    
+    private void setIDCestista()
+    {
+        idCestista=nextID;
+        nextID++;
     }
 
     public String getNome() 
