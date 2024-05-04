@@ -5,6 +5,7 @@
 package com.mycompany.progettone_basket;
 
 import Eccezioni.EccezioneAltezza;
+import Eccezioni.EccezioneCampionatoCompleto;
 import Eccezioni.EccezioneIDNonPresente;
 import Eccezioni.EccezioneRosaCompleta;
 import Utilita.ConsoleInput;
@@ -62,9 +63,9 @@ public class App {
                     System.out.println("Arrivederci");
                     break;
                 case 1:
-                    String[] vociAmm={"Esci","Visualizza Campionato","Visualizza Squadra","Visualizza Cestista","Inserisci Cestista","Inserisci Squadra",
-                    "Rimuovi Cestista","Rimuovi Squadra","Visualizza Altezze Crescenti di una Squadra",
-                    "Visualizza Altezze Decrescenti di una Squadra","Modifica punteggio","Salva dati CSV",
+                    String[] vociAmm={"Esci","Visualizza Campionato","Visualizza Squadra","Visualizza Cestista","Inserisci Cestista",
+                    "Inserisci Squadra","Rimuovi Cestista","Rimuovi Squadra","Visualizza Altezze Crescenti di una Squadra",
+                    "Visualizza Altezze Decrescenti di una Squadra","Modifica punteggio","Modifica cestista","Salva dati CSV",
                     "Carica dati CSV","Salva dati BIN","Carica dati BIN"};
                     Menu m1=new Menu(vociAmm);
                     do
@@ -72,18 +73,20 @@ public class App {
                         sceltaUtente=m1.sceltaMenu();
                         switch (sceltaUtente) 
                         {
-                            case 0:
+                            case 0: //esci
                                 System.out.println("Arrivederci");
                                 break;
-                            case 1:
-                                System.out.println(); //fare toString dello scaffale
-                            case 2:
+                            case 1: //visualizza campionato
+                                System.out.println(NBA.toString());
+                                break;
+                            case 2: //visualizza squadra
                                 System.out.print("Inserisci ID squadra da visualizzare-->");
                                 try 
                                 {
                                     id=tastiera.readInt();
                                     sq=NBA.getSquadra(id);
                                     System.out.println(sq.toString());
+                                    break;
                                 }
                                 catch (IOException ex) {
                                     System.out.println("Errore nell'inserimento");
@@ -93,23 +96,28 @@ public class App {
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
-                            case 3:
+                            case 3: //visualizza cestista
                                System.out.print("Inserisci ID cestista da visualizzare-->");
                                 try 
                                 {
                                     id=tastiera.readInt();
                                     cest=NBA.getCestista(id);
                                     System.out.println(cest.toString());
+                                    break;
                                 }
-                                catch (IOException ex) {
+                                catch (IOException ex) 
+                                {
                                     System.out.println("Errore nell'inserimento");
-                                } catch (NumberFormatException ex) {
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
                                     System.out.println("ID inserito non valido");
-                                } catch (EccezioneIDNonPresente ex)
+                                } 
+                                catch(EccezioneIDNonPresente ex)
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
-                            case 4:  
+                            case 4: //add cestista
                                 try 
                                 {
                                     System.out.print("Inserisci id della squadra dove inserire il giocatore-->");
@@ -129,7 +137,7 @@ public class App {
                                     h=tastiera.readDouble();
                                     cest=new Cestista(nome,cognome,LocalDate.of(aaaa,mm,gg),h);
                                     NBA.setCestista(id,cest);
-                                    
+                                    break;
                                 } 
                                 catch (IOException ex) {
                                     System.out.println("Errore nell'inserimento dei dati");
@@ -150,26 +158,36 @@ public class App {
                                 {
                                     System.out.println("Input non valido");
                                 }
-                            case 5:
+                            case 5: //add squadra
                                 try 
                                 {
                                     System.out.print("Inserisci nome squadra-->");
                                     nome=tastiera.readString();
                                     System.out.print("Inserisci punteggio-->");
                                     pti=tastiera.readInt();
+                                    sq=new Squadra(nome,pti);
+                                    NBA.setSquadra(sq);
+                                    break;
                                 } 
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Errore di input");
                                 }
-                            
-
-                            case 6:
+                                catch (EccezioneCampionatoCompleto ex)
+                                {
+                                    System.out.println("Il campionato è al completo, squadra non inserita");
+                                }
+                                catch (NumberFormatException ex)
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                            case 6: //rimuovi cestista
                                 try 
                                 {
                                     System.out.print("Inserisci ID del cestista da rimuovere-->");
                                     id=tastiera.readInt();
                                     NBA.rimuoviCestista(id);
+                                    break;
                                 } 
                                 catch (IOException ex) 
                                 {
@@ -183,9 +201,64 @@ public class App {
                                 {
                                     System.out.println("Giocatore non trovato");
                                 }
-                            
-                                
-                                
+                            case 7: //rimuovi squadra    
+                                try
+                                {
+                                    System.out.print("Inserisci ID della squadra da rimuovere-->");
+                                    id=tastiera.readInt();
+                                    NBA.rimuoviSquadra(id);
+                                    break;
+                                }
+                                catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                            case 8: //altezze crescenti
+                                break;
+                            case 9:
+                                break; //altezze decrescenti
+                            case 10: //moifica punteggio
+                                try
+                                {   
+                                    System.out.print("Inserisci ID della squadra di cui si vuole modificare il punteggio-->");
+                                    id=tastiera.readInt();
+                                    System.out.println("Inserisci il nuovo punteggio-->");
+                                    pti=tastiera.readInt();
+                                    NBA.modificaPunteggio(id, pti);
+                                    sq=NBA.getSquadra(id);
+                                    System.out.println("Punteggio aggiornato:\n"+sq.toString());
+                                }
+                                catch(EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                            case 11: //modifica cestista
+                                //aggiungere a diagramma delle classi e sistemare parametri di modificaPunteggio
+                                break;
+                            case 12: //salva dati CSV
+                                break;
+                            case 13: //carica dati CSV
+                                break;
+                            case 14: //salva dati BIN
+                                break;
+                            case 15: //carica dati BIN
+                                break;    
                         }           
                     }while(sceltaUtente!=0);          
                     break;
@@ -193,7 +266,7 @@ public class App {
                     System.out.println("Benveuto");
                     String[] vociTele={"Esci","Visualizza Campionato","Visualizza Squadra","Visualizza Cestista",
                     "Visualizza Altezze Crescenti di una Squadra","Visualizza Altezze Decrescenti di una Squadra",
-                    "Carica dati CSV","Carica dati BIN"};
+                    "Salva dai CSV","Carica dati CSV","Salva dati BIN","Carica dati BIN"};
                     Menu m2=new Menu(vociTele);
                     do
                     {
@@ -203,8 +276,60 @@ public class App {
                             case 0:
                                 System.out.println("Arrivederci");
                                 break;
-                            default:
-                                throw new AssertionError();
+                            case 1: //visualizza campionato
+                                System.out.println(NBA.toString());
+                                break;
+                            case 2: //visualizza squadra
+                                System.out.print("Inserisci ID squadra da visualizzare-->");
+                                try 
+                                {
+                                    id=tastiera.readInt();
+                                    sq=NBA.getSquadra(id);
+                                    System.out.println(sq.toString());
+                                    break;
+                                }
+                                catch (IOException ex) {
+                                    System.out.println("Errore nell'inserimento");
+                                } catch (NumberFormatException ex) {
+                                    System.out.println("ID inserito non valido");
+                                }catch(EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("L'ID inserito non è presente nel campionato");
+                                }
+                            case 3: //visualizza cestista
+                               System.out.print("Inserisci ID cestista da visualizzare-->");
+                                try 
+                                {
+                                    id=tastiera.readInt();
+                                    cest=NBA.getCestista(id);
+                                    System.out.println(cest.toString());
+                                    break;
+                                }
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore nell'inserimento");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("ID inserito non valido");
+                                } 
+                                catch(EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("L'ID inserito non è presente nel campionato");
+                                }
+                            case 4: //altezze crescenti
+                                break;
+                            case 5:
+                                break; //altezze decrescenti
+                            case 6: //salva dati CSV
+                                break;
+                            case 7: //carica dati CSV
+                                break;
+                            case 8: //salva dati BIN
+                                break;
+                            case 9: //carica dati BIN
+                                break; 
+                            
                         }
                     }while(sceltaUtente!=0);
                     break;

@@ -126,5 +126,29 @@ public class Campionato implements Serializable
         nSquadrePresenti--;
     }
     
+    public void modificaPunteggio(int id,int nuovoPunteggio) throws EccezioneIDNonPresente
+    {
+        for(int i=0;i<nSquadrePresenti;i++)
+        {
+            if(elencoSquadre[i].getIdSquadra()==id)
+            {
+                System.out.println("Squadra iniziale:\n"+elencoSquadre[i].toString());
+                elencoSquadre[i].setPunti(nuovoPunteggio);
+            }            
+        }
+        throw new EccezioneIDNonPresente(); 
+    }
+    
+    @Override
+    public String toString()
+    {
+        String s="";
+        for(int i=0;i<nSquadrePresenti;i++)
+        {
+            s+=elencoSquadre[i].toString();
+        }
+        return s;
+    }
+    
     
 }
