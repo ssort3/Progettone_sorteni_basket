@@ -197,7 +197,7 @@ public class Squadra implements Serializable
         throw new EccezioneIDNonPresente();
     }
     
-    public Cestista[] ordinaAltezzaCrescente(Squadra s)
+    public Cestista[] ordinaAltezzaCrescente()
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
@@ -205,7 +205,7 @@ public class Squadra implements Serializable
         {
             try 
             {
-                vOrdinato[i]=s.getCestista(i);
+                vOrdinato[i]=this.getCestista(i);
             } 
             catch (EccezioneIDNonPresente ex) 
             {
@@ -217,6 +217,32 @@ public class Squadra implements Serializable
             for(int j=i+1;j<getNCestistiPresenti();j++)
             {
                 if(vOrdinato[j].getAltezza()<vOrdinato[i].getAltezza())
+                    Ordinatore.scambiaCestista(vOrdinato, i, j);
+            }
+        }
+        return vOrdinato;
+    }
+    
+    public Cestista[] ordinaAltezzaDerescente()
+    {
+        //creo una copia di "s" e lo chiamo "vOrdinato"
+        Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
+        for(int i=0;i<getNCestistiPresenti();i++)
+        {
+            try 
+            {
+                vOrdinato[i]=this.getCestista(i);
+            } 
+            catch (EccezioneIDNonPresente ex) 
+            {
+                //non fare nulla
+            }
+        }
+        for(int i=0;i<getNCestistiPresenti()-1;i++)
+        {
+            for(int j=i+1;j<getNCestistiPresenti();j++)
+            {
+                if(vOrdinato[j].getAltezza()>vOrdinato[i].getAltezza())
                     Ordinatore.scambiaCestista(vOrdinato, i, j);
             }
         }

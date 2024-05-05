@@ -8,8 +8,10 @@ import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneCampionatoCompleto;
 import Eccezioni.EccezioneIDNonPresente;
 import Eccezioni.EccezioneRosaCompleta;
+import Eccezioni.FileException;
 import Utilita.ConsoleInput;
 import Utilita.Menu;
+import Utilita.TextFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.logging.Level;
@@ -46,6 +48,8 @@ public class App {
         int attore=0;
         int sceltaUtente=0;
         int id,gg,mm,aaaa,pti;
+        String nomeFileCSV = null,nomeFileBinario;
+        TextFile f1;
         double h;
         String nome,cognome;
         Squadra sq;
@@ -86,7 +90,6 @@ public class App {
                                     id=tastiera.readInt();
                                     sq=NBA.getSquadra(id);
                                     System.out.println(sq.toString());
-                                    break;
                                 }
                                 catch (IOException ex) {
                                     System.out.println("Errore nell'inserimento");
@@ -96,6 +99,7 @@ public class App {
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
+                                break;
                             case 3: //visualizza cestista
                                System.out.print("Inserisci ID cestista da visualizzare-->");
                                 try 
@@ -103,7 +107,6 @@ public class App {
                                     id=tastiera.readInt();
                                     cest=NBA.getCestista(id);
                                     System.out.println(cest.toString());
-                                    break;
                                 }
                                 catch (IOException ex) 
                                 {
@@ -117,6 +120,7 @@ public class App {
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
+                                break;
                             case 4: //add cestista
                                 try 
                                 {
@@ -137,7 +141,6 @@ public class App {
                                     h=tastiera.readDouble();
                                     cest=new Cestista(nome,cognome,LocalDate.of(aaaa,mm,gg),h);
                                     NBA.setCestista(id,cest);
-                                    break;
                                 } 
                                 catch (IOException ex) {
                                     System.out.println("Errore nell'inserimento dei dati");
@@ -158,6 +161,7 @@ public class App {
                                 {
                                     System.out.println("Input non valido");
                                 }
+                                break;
                             case 5: //add squadra
                                 try 
                                 {
@@ -167,7 +171,6 @@ public class App {
                                     pti=tastiera.readInt();
                                     sq=new Squadra(nome,pti);
                                     NBA.setSquadra(sq);
-                                    break;
                                 } 
                                 catch (IOException ex) 
                                 {
@@ -181,13 +184,13 @@ public class App {
                                 {
                                     System.out.println("Input non valido");
                                 }
+                                break;
                             case 6: //rimuovi cestista
                                 try 
                                 {
                                     System.out.print("Inserisci ID del cestista da rimuovere-->");
                                     id=tastiera.readInt();
                                     NBA.rimuoviCestista(id);
-                                    break;
                                 } 
                                 catch (IOException ex) 
                                 {
@@ -201,12 +204,33 @@ public class App {
                                 {
                                     System.out.println("Giocatore non trovato");
                                 }
+                                break;
                             case 7: //rimuovi squadra    
                                 try
                                 {
                                     System.out.print("Inserisci ID della squadra da rimuovere-->");
                                     id=tastiera.readInt();
                                     NBA.rimuoviSquadra(id);
+                                }
+                                catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                                break;
+                            case 8: //altezze crescenti                               
+                                try
+                                {
+                                    System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
+                                    id=tastiera.readInt();
+                                    NBA.ordinaAltezzaCrescente(id); //sistemare diagrama classi
                                     break;
                                 }
                                 catch (EccezioneIDNonPresente ex)
@@ -221,10 +245,28 @@ public class App {
                                 {
                                     System.out.println("Input non valido");
                                 }
-                            case 8: //altezze crescenti
                                 break;
-                            case 9:
-                                break; //altezze decrescenti
+                            case 9: //altezze decrescenti
+                                try
+                                {
+                                    System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
+                                    id=tastiera.readInt();
+                                    NBA.ordinaAltezzaDerescente(id); //sistemare diagrama classi
+                                    break;
+                                }
+                                catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                                break;                  
                             case 10: //moifica punteggio
                                 try
                                 {   
@@ -252,9 +294,87 @@ public class App {
                                 //aggiungere a diagramma delle classi e sistemare parametri di modificaPunteggio
                                 break;
                             case 12: //salva dati CSV
-                                break;
+                                try 
+                                {
+                                    f1= new TextFile(nomeFileCSV,'W'); //Apro ill file in scrittura
+                                    String datiCestista;
+                                    for(int i=0;i<NBA.getNSquadrePresenti();i++)
+                                    {
+                                            try 
+                                            {
+                                                cest=NBA.getCestista(i);
+                                                datiCestista=cest.toString();
+                                                f1.toFile(datiCestista);
+                                            }                       
+                                            catch (FileException ex) 
+                                            {
+                                                //non succederà mai
+                                                //mostra il messaggio dell'eccezione
+                                                System.out.println(ex.toString());
+                                            } 
+                                            catch (EccezioneIDNonPresente ex) 
+                                            {
+                                                //non fare  niente e vai avanti
+                                            }
+                                    }
+                                    f1.closeFile();  //Tutti i cestisti sono stati scritti
+                                    System.out.println("Esportazione avvenuta correttamente.");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Impossibile accedere al file");
+                                }
+                                break;                               
                             case 13: //carica dati CSV
-                                break;
+                                /*String rigaLetta;
+                                String[] datiCestista;
+                                try 
+                                {   
+                                    //Importa da file CSV
+                                    f1=new TextFile(nomeFileCSV,'R');
+                                    do
+                                    {
+                                        try
+                                        {
+                                            rigaLetta=f1.fromFile();
+                                            datiCestista=rigaLetta.split(";");
+                                            id=Integer.parseInt(datiCestista[0]);
+                                            nome=datiCestista[1];
+                                            cognome=datiCestista[2];
+                                            //dataNascita=datiCestista[3]; capire come salvare data su file per caricarla meglio
+                                            h=Double.parseDouble(datiCestista[4]);
+                                            cest=new Cestista(nome,cognome,LocalDate.of(1111,11,1),h);
+                                            try 
+                                            {
+                                                s1.setLibro(lib, ripiano, posizione);
+                                            } 
+                                            catch (EccezioneRipianoNonValido ex) 
+                                            {
+                                                System.out.println("Errore: ripiano "+ripiano+ " non corretto per il volume "+titolo);
+                                            } 
+                                            catch (EccezionePosizioneNonValida ex) 
+                                            {
+                                                 System.out.println("Errore: posizione "+posizione+ " non corretta per il volume "+titolo);
+                                            }
+                                            catch (EccezionePosizioneOccupata ex) 
+                                            {
+                                                 System.out.println("Nel ripiano  "+ripiano+ " e posizione "+posizione+" è già presente un volume. Il volume "+titolo+ " non sarà posizionato nello scaffale.");
+                                            }
+                                        }
+                                        catch (FileException ex) 
+                                        {
+                                            //fine del file
+                                            f1.closeFile();
+                                            System.out.println("Fine operazione di caricamento");
+                                            break;
+                                        }
+                                    }while(true);                
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Impossibile accedere al file!");
+                                }*/
+                                break;                               
                             case 14: //salva dati BIN
                                 break;
                             case 15: //carica dati BIN
@@ -318,9 +438,47 @@ public class App {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
                             case 4: //altezze crescenti
+                                try
+                                {
+                                    System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
+                                    id=tastiera.readInt();
+                                    NBA.ordinaAltezzaCrescente(id); //sistemare diagrama classi
+                                    break;
+                                }
+                                catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
                                 break;
-                            case 5:
-                                break; //altezze decrescenti
+                            case 5: //altezze decrescenti
+                                try
+                                {
+                                    System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
+                                    id=tastiera.readInt();
+                                    NBA.ordinaAltezzaDerescente(id); //sistemare diagrama classi
+                                    break;
+                                }
+                                catch (EccezioneIDNonPresente ex)
+                                {
+                                    System.out.println("Squadra non trovata");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non valido");
+                                }
+                                break; 
                             case 6: //salva dati CSV
                                 break;
                             case 7: //carica dati CSV

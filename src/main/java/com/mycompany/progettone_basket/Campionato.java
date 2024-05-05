@@ -139,6 +139,30 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente(); 
     }
     
+    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente
+    {
+        for(int i=0;i<nSquadrePresenti;i++)
+        {
+            if(elencoSquadre[i].getIdSquadra()==id)
+            {
+                elencoSquadre[i].ordinaAltezzaCrescente();
+            }            
+        }
+        throw new EccezioneIDNonPresente();
+    }
+    
+        public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente
+    {
+        for(int i=0;i<nSquadrePresenti;i++)
+        {
+            if(elencoSquadre[i].getIdSquadra()==id)
+            {
+                elencoSquadre[i].ordinaAltezzaDerescente();
+            }            
+        }
+        throw new EccezioneIDNonPresente();
+    }
+    
     @Override
     public String toString()
     {
