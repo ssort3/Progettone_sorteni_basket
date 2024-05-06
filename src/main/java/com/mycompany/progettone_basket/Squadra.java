@@ -16,7 +16,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe Squadra, rappresenta una squadra di cestisti
+ * nCestistiPresenti rappresenta il numero dei cestisti presenti nella squadra
+ * N_MAX_CESTISTI rappresenta il numero massimo di cestisti che possono far parte di una squadra
+ * rosa rappresenta la rosa della squadra, cioè un array contentente tutti i cestisti della squadra
+ * idSquadra rappresenta il codice identificativo univoco della squadra
+ * nextID rappresenta il codice identificativo univoco della prossima squadra che verrà creata
+ * nomeSquadra rappresenta il nome della squadra
+ * punti rappresenta il punteggio totalizzato dalla squadra 
  * @author Studente
  */
 public class Squadra implements Serializable
@@ -25,10 +32,15 @@ public class Squadra implements Serializable
     private final int N_MAX_CESTISTI=15;
     private Cestista[] rosa;
     private int idSquadra;
-    private int nextID=1;
+    private static int nextID=1;
     private String nomeSquadra;
     private int punti;
 
+    /**
+     * Costruttore
+     * @param nomeSquadra nome della squadra da creare
+     * @param punti punteggio della squadra da creare
+     */
     public Squadra(String nomeSquadra, int punti)
     {
         rosa=new Cestista[N_MAX_CESTISTI];
@@ -38,33 +50,59 @@ public class Squadra implements Serializable
         setPunti(punti);
     }
     
+    /**
+     * Costruttore di copia
+     * @param s1 squadra di cui verrà creata una copia
+     */
     public Squadra(Squadra s1)
     {
+        rosa=new Cestista[N_MAX_CESTISTI];
         this.nomeSquadra=s1.getNomeSquadra();
         this.idSquadra=s1.getIdSquadra();
         this.punti=s1.getPunti();
     }
 
+    /**
+     * Getter dell'attributo nCestistiPresenti
+     * @return numero di cestisti presenti nella rosa della squadra
+     */
     public int getNCestistiPresenti() 
     {
         return nCestistiPresenti;
     }
     
+    /**
+     * Getter dell'attributo punti
+     * @return punteggio della squadra
+     */
     public int getPunti()
     {
         return punti;
     }
 
+    /**
+     * Getter dell'attributo idSquadra
+     * @return ID della squadra
+     */
     public int getIdSquadra() 
     {
         return idSquadra;
     }
     
+    /**
+     * Getter dell'attributo N_MAX_CESTISTI
+     * @return numero massimo di cestisti nella rosa della squadra
+     */
     public int getN_MAX_CESTISTI()
     {
         return N_MAX_CESTISTI;
     }
 
+    /**
+     * Setter dell'attributo punti
+     * se il punteggio inserito è negativo, esso viene posto a 0
+     * @param punti punteggio da assegnare alla squadra in creazione
+     */
     public void setPunti(int punti)
     {
         if(punti<0)
@@ -72,33 +110,56 @@ public class Squadra implements Serializable
         this.punti=punti;
     }
 
+    /**
+     * Setter privato dell'attributo idSquadra
+     * assegna a idSquadra il valore di nextID
+     * incrementa nextID
+     */
     private void setIdSquadra() 
     {
-        this.idSquadra = nextID;
+        idSquadra=nextID;
         nextID++;
     }
 
+    /**
+     * Getter dell'attributo nomeSquadra
+     * @return il nome della squadra
+     */
     public String getNomeSquadra() 
     {
         return nomeSquadra;
     }
 
+    /**
+     * Setter dell'attributo nomeSquadra
+     * @param nomeSquadra nome da assegnare alla squadra in creazione
+     */
     public void setNomeSquadra(String nomeSquadra) 
     {
         this.nomeSquadra = nomeSquadra;
     }
 
+    /**
+     * toString della squadra
+     * @return una stringa contenente ID, nome, punteggio della squadra e il toString di ogni cestista presente
+     */
     @Override
     public String toString() 
     {
-        String s=nomeSquadra+"\n";
+        String s=this.getIdSquadra()+";"+nomeSquadra+";"+this.getPunti()+"\n";
         for(int i=0;i<nCestistiPresenti;i++)
         { 
-            s+=(i+": "+rosa[i].toString()+"\n");
+            //s+=("\t"+i+": "+rosa[i].toString()+"\n"); toString con l'indice (inutile)
+            s+=("\t"+rosa[i].toString()+"\n");
         }
         return s;
     }
     
+    /**
+     * Inserisce un cestista nella squadra
+     * @param c cestista da inserire
+     * @throws EccezioneRosaCompleta rosa della squadra al completo
+     */
     public void setCestista(Cestista c) throws EccezioneRosaCompleta
     {
         if(nCestistiPresenti==N_MAX_CESTISTI)
@@ -107,6 +168,12 @@ public class Squadra implements Serializable
             nCestistiPresenti++;
     }
     
+    /**
+     * Restituisce un cestista della squadra
+     * @param id ID del cestista da restituire
+     * @return il cestista con id corrispondente a quello indicato dal parametro
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nella squadra 
+     */
     public Cestista getCestista(int id) throws EccezioneIDNonPresente
     {
         Cestista cest;
@@ -121,8 +188,13 @@ public class Squadra implements Serializable
         throw new EccezioneIDNonPresente();      
     }
     
-    
-    public void rimuoviCestista(int id) throws EccezioneIDNonPresente, NullPointerException
+    /**
+     * Rimuove un cestista dalla squadra
+     * @param id ID del cestista da rimuovere
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nella squadra
+     * * @throws NullPointerException in caso la posizione "i" fosse vuota
+     */
+    public void rimuoviCestista(int id) throws EccezioneIDNonPresente
     {
         for(int i=0;i<nCestistiPresenti;i++)
         {
@@ -136,7 +208,12 @@ public class Squadra implements Serializable
         
     }
     
-    public void eliminaPosizione(int pos) throws NullPointerException
+    /**
+     * Scorre la squadra e scala di una posizione i cestisti successivi a quello eliminato
+     * @param pos posizione da cui parte la scalata
+     * @throws NullPointerException in caso la posizione fosse vuota
+     */
+    public void eliminaPosizione(int pos) throws NullPointerException//vedere se in uml c'è public o private
     {
         for(int i=pos;i<nCestistiPresenti;i++)
         {
@@ -145,6 +222,10 @@ public class Squadra implements Serializable
         nCestistiPresenti--;
     }
     
+    /**
+     * Ordina i cestisti di una squadra dal più basso al più alto
+     * @return un array con i cestisti ordinati
+     */
     public Cestista[] ordinaAltezzaCrescente()
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
@@ -171,6 +252,10 @@ public class Squadra implements Serializable
         return vOrdinato;
     }
     
+    /**
+     * Ordina i cestisti di una squadra dal più alto al più basso
+     * @return un array con i cestisti ordinati
+     */
     public Cestista[] ordinaAltezzaDerescente()
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"

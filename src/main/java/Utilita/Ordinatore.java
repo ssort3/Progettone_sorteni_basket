@@ -80,7 +80,7 @@ public class Ordinatore
             {
                 if(vOrdinato[j]!=null)
                 {
-                    if(vOrdinato[j].getPunti()<vOrdinato[i].getPunti())
+                    if(vOrdinato[j].getPunti()>vOrdinato[i].getPunti())
                     scambiaSquadra(vOrdinato,i,j);
                 }
                 

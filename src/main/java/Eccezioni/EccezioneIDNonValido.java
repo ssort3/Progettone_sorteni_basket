@@ -6,9 +6,9 @@ package Eccezioni;
 
 /**
  *
- * @author Studente
+ * @author Sorteni
  */
-public class EccezioneNessunaSquadra extends Exception
+public class EccezioneIDNonValido extends Exception
 {
     
 }

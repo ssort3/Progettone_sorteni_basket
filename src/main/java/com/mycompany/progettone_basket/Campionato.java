@@ -7,6 +7,7 @@ package com.mycompany.progettone_basket;
 import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneCampionatoCompleto;
 import Eccezioni.EccezioneIDNonPresente;
+import Eccezioni.EccezioneIDNonValido;
 import Eccezioni.EccezioneNessunaSquadra;
 import Eccezioni.EccezioneRosaCompleta;
 import Eccezioni.FileException;
@@ -24,7 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe Campionato, rappresenta un campionato di basket
+ * nSquadrepresenti rappresenta il numero di squadre del campionato
+ * N_MAX_SQUADRE rappresenta il numero massimo di squadre possibili nel campionato
+ * elencoSquadre array contentente le squadre del campionato
  * @author Studente
  */
 public class Campionato implements Serializable
@@ -33,28 +37,52 @@ public class Campionato implements Serializable
     private final int N_MAX_SQUADRE=20;
     private Squadra[] elencoSquadre;
     
+    /**
+     * Costruttore
+     * Inizializza elencoSquadre
+     * Imposta nSquadrePresenti a 0
+     */
     public Campionato()
     {
         elencoSquadre=new Squadra[N_MAX_SQUADRE];
         nSquadrePresenti=0;
-    }
+    }  
     
     //costruttore di copia tolto per indicazione del professore
     
+    /**
+     * Getter dell'attributo nSquadrePresenti
+     * @return il numero di squadre nel campionato
+     */
     public int getNSquadrePresenti()
     {
         return nSquadrePresenti;
     }
     
+    /**
+     * Getter dell'attributo N_MAX_SQUADRE
+     * @return il numero massimo di squadre del campionato
+     */
     public int getN_MAX_SQUADRE()
     {
         return N_MAX_SQUADRE;
     }
     
-    public void setCestista(int idSquadra, Cestista c) throws EccezioneRosaCompleta, EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Aggiunge un cestista a una squadra selezionata
+     * @param idSquadra ID della squadra in cui aggiungere il cestista
+     * @param c cestista da aggiungere
+     * @throws EccezioneRosaCompleta se la rosa della squadra è piena
+     * @throws EccezioneIDNonPresente se la squadra selezionata non esiste
+     * @throws EccezioneNessunaSquadra se non ci sono squadre nel campionato
+     * @throws EccezioneIDNonValido se l'ID della squadra è negativo
+     */
+    public void setCestista(int idSquadra, Cestista c) throws EccezioneRosaCompleta, EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
         if(nSquadrePresenti==0)
             throw new EccezioneNessunaSquadra();
+        if(idSquadra<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==idSquadra)
@@ -66,21 +94,36 @@ public class Campionato implements Serializable
         }
     }
     
+    /**
+     * Aggiunge una squadra al campionato
+     * @param s squadra da aggiungere
+     * @throws EccezioneCampionatoCompleto se il campionato è pieno
+     */
     public void setSquadra(Squadra s) throws EccezioneCampionatoCompleto
     {
         if(nSquadrePresenti==N_MAX_SQUADRE)
             throw new EccezioneCampionatoCompleto();
         else
         {
-            elencoSquadre[nSquadrePresenti]=new Squadra(s.getNomeSquadra(),s.getPunti());
+            elencoSquadre[nSquadrePresenti]=new Squadra(s);
         }
         nSquadrePresenti++;
         if(nSquadrePresenti!=1)
             elencoSquadre=Ordinatore.ordinaClassifica(elencoSquadre);
     }
     
-    public Cestista getCestista(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Restituisce un cestista
+     * @param id ID del cestista da restituire
+     * @return il cestista di ID "id"
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nel campionato
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public Cestista getCestista(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
+        if(id<0)
+            throw new EccezioneIDNonValido();
         if(nSquadrePresenti==0)
             throw new EccezioneNessunaSquadra();
         Cestista cest;
@@ -95,8 +138,18 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente();
     }
     
-    public Squadra getSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Restituisce una squadra
+     * @param id ID della squadra da restituire
+     * @return la squadra di ID "id"
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nel campionato
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public Squadra getSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
+        if(id<0)
+            throw new EccezioneIDNonValido();
         if(nSquadrePresenti==0)
             throw new EccezioneNessunaSquadra();
         Squadra sq;
@@ -104,41 +157,71 @@ public class Campionato implements Serializable
         {
             if(elencoSquadre[i].getIdSquadra()==id)
             {
-                sq=new Squadra(elencoSquadre[i].getNomeSquadra(),elencoSquadre[i].getPunti());
+                sq=new Squadra(elencoSquadre[i]);
                 return sq;
-            }            
+            }         
         }
         throw new EccezioneIDNonPresente(); 
     }
     
-    public void rimuoviCestista(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Rimuove un cestista dal campionato
+     * @param id ID del cestista da rimuovere
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nel campionato
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public void rimuoviCestista(int id) throws  EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
         if(nSquadrePresenti==0)
-            throw new EccezioneNessunaSquadra();
+            throw new EccezioneNessunaSquadra(); 
+        if(id<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
-            if(elencoSquadre[i].getCestista(i).getIDCestista()==id)
+            for(int j=0;j<elencoSquadre[i].getNCestistiPresenti();j++)
             {
-                elencoSquadre[i].rimuoviCestista(id);
-            }            
+                if(elencoSquadre[i].getCestista(id)!=null)
+                {
+                    elencoSquadre[i].rimuoviCestista(id);
+                    return;
+                }
+                else
+                    throw new EccezioneIDNonPresente(); 
+            }     
         }
         throw new EccezioneIDNonPresente(); 
     }
     
-    public void rimuoviSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Elimina una squadra dal campionato
+     * @param id ID della squadra da eliminare
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nel campionato
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public void rimuoviSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
         if(nSquadrePresenti==0)
             throw new EccezioneNessunaSquadra();
+        if(id<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==id)
             {
                 eliminaPosizione(i);
+                return;
             }            
         }
         throw new EccezioneIDNonPresente(); 
     }
     
+    /**
+     * "scala" il campionato in modo da non lasciare posizioni vuote
+     * @param pos posizione da cui parte la "scalata"
+     * @throws NullPointerException in caso la posizione fosse vuota
+     */
     public void eliminaPosizione(int pos) throws NullPointerException
     {
         for(int i=pos;i<nSquadrePresenti;i++)
@@ -148,43 +231,78 @@ public class Campionato implements Serializable
         nSquadrePresenti--;
     }
     
-    public void modificaPunteggio(int id,int nuovoPunteggio) throws EccezioneIDNonPresente
+    /**
+     * Modifica il punteggio di una squadra
+     * @param id Id della squadra di cui si vuole eliminare il punteggio
+     * @param nuovoPunteggio nuovo punteggio della squadra
+     * @throws EccezioneIDNonPresente se la squadra cercara non è presente
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public void modificaPunteggio(int id,int nuovoPunteggio) throws EccezioneIDNonPresente, EccezioneIDNonValido
     {
+        if(id<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==id)
-            {
-                System.out.println("Squadra iniziale:\n"+elencoSquadre[i].toString());
+            {  
                 elencoSquadre[i].setPunti(nuovoPunteggio);
+                return;
             }            
         }
         throw new EccezioneIDNonPresente(); 
     }
     
-    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente
+    /**
+     * Ordina i cestisti di una squadra dal più basso al più alto
+     * @param id ID della squadra da ordinare
+     * @return la squadra ordinata
+     * @throws EccezioneIDNonPresente se la squadra non è presente
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido
     {
+        Cestista[] vOrdinato;
+        if(id<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==id)
             {
-                elencoSquadre[i].ordinaAltezzaCrescente();
+                vOrdinato=elencoSquadre[i].ordinaAltezzaCrescente();
+                return vOrdinato;
             }            
         }
         throw new EccezioneIDNonPresente();
     }
     
-        public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente
+    /**
+     * Ordina i cestisti di una squadra dal più alto al più basso
+     * @param id ID della squadra da ordinare
+     * @return la squadra ordinata
+     * @throws EccezioneIDNonPresente se la squadra non è presente
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido
     {
+        Cestista[] vOrdinato;
+        if(id<0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==id)
             {
-                elencoSquadre[i].ordinaAltezzaDerescente();
+                vOrdinato=elencoSquadre[i].ordinaAltezzaDerescente();
+                return vOrdinato;
             }            
         }
         throw new EccezioneIDNonPresente();
     }
     
+    /**
+     * toString della classe campionato
+     * @return una stringa contenente il toString di ogni squadra presente
+     */
     @Override
     public String toString()
     {
@@ -196,8 +314,18 @@ public class Campionato implements Serializable
         return s;
     }
     
-    private int getIDSquadraAppartenenza(int idCestista) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    /**
+     * Restituisce l'id di una squadra di un cestista di riferimento
+     * @param idCestista id del cestista di riferimento
+     * @return l'ID della squadra del cestista
+     * @throws EccezioneIDNonPresente se il cestista non è presente
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se l'ID inserito è negativo
+     */
+    private int getIDSquadraAppartenenza(int idCestista) throws EccezioneIDNonPresente, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
+        if(idCestista<=0)
+            throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             for(int j=0;j<elencoSquadre[i].getNCestistiPresenti();j++)
@@ -209,7 +337,14 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente();
     }
     
-    public void salvaDatiCSV(String nomeFile) throws IOException, EccezioneNessunaSquadra
+    /**
+     * Salva i dati del campionato in un file di in formato .CSV
+     * @param nomeFile nome del file
+     * @throws IOException se silecchia stacca la spina del pc
+     * @throws EccezioneNessunaSquadra se il campionato è vuoto
+     * @throws EccezioneIDNonValido se id negativo
+     */
+    public void salvaDatiCSV(String nomeFile) throws IOException, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
         TextFile f1;
         Cestista cest;
@@ -237,8 +372,14 @@ public class Campionato implements Serializable
         f1.closeFile();  //Tutti i cestisti sono stati scritti
         System.out.println("Esportazione avvenuta correttamente.");       
     }
-    
-    public void caricaDatiCSV(String nomeFile) throws IOException
+
+    /**
+     * Carica i dati del campionato da un file di in formato .CSV
+     * @param nomeFile nome del file 
+     * @throws IOException se silecchia stacca la spina del pc
+     * @throws EccezioneIDNonValido se Valido id negativo
+     */
+    public void caricaDatiCSV(String nomeFile) throws IOException, EccezioneIDNonValido
     {
         String rigaLetta;
         String[] datiCestista;
@@ -294,6 +435,12 @@ public class Campionato implements Serializable
         }while(true);                          
     }
     
+    /**
+     * Salva i dati del campionato su un file binario
+     * @param nomeFile nome del file
+     * @throws FileNotFoundException se non trova il file
+     * @throws IOException se silecchia stacca la spina del pc
+     */
     public void salvaDatiBIN(String nomeFile) throws FileNotFoundException, IOException
     {
         ObjectOutputStream writer=new ObjectOutputStream(new FileOutputStream(nomeFile));
@@ -302,6 +449,14 @@ public class Campionato implements Serializable
         writer.close();
     }
     
+    /**
+     * Carica i dati del campionato da un file di in formato binario
+     * @param nomeFile nome del file
+     * @return il campionato salvato sul file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */
     public Campionato caricaDatiBIN(String nomeFile) throws FileNotFoundException, IOException, ClassNotFoundException
     {
         Campionato camp;
