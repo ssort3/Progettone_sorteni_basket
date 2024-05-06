@@ -4,11 +4,24 @@
  */
 package com.mycompany.progettone_basket;
 
+import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneCampionatoCompleto;
 import Eccezioni.EccezioneIDNonPresente;
+import Eccezioni.EccezioneNessunaSquadra;
 import Eccezioni.EccezioneRosaCompleta;
+import Eccezioni.FileException;
 import Utilita.Ordinatore;
+import Utilita.TextFile;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -38,8 +51,10 @@ public class Campionato implements Serializable
         return N_MAX_SQUADRE;
     }
     
-    public void setCestista(int idSquadra, Cestista c) throws EccezioneRosaCompleta, EccezioneIDNonPresente
+    public void setCestista(int idSquadra, Cestista c) throws EccezioneRosaCompleta, EccezioneIDNonPresente, EccezioneNessunaSquadra
     {
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==idSquadra)
@@ -57,14 +72,17 @@ public class Campionato implements Serializable
             throw new EccezioneCampionatoCompleto();
         else
         {
-            elencoSquadre[nSquadrePresenti]=new Squadra(s.getNomeSquadra(),s.getIdSquadra());
+            elencoSquadre[nSquadrePresenti]=new Squadra(s.getNomeSquadra(),s.getPunti());
         }
         nSquadrePresenti++;
-        elencoSquadre=Ordinatore.ordinaClassifica(elencoSquadre);
+        if(nSquadrePresenti!=1)
+            elencoSquadre=Ordinatore.ordinaClassifica(elencoSquadre);
     }
     
-    public Cestista getCestista(int id) throws EccezioneIDNonPresente
+    public Cestista getCestista(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
     {
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         Cestista cest;
         for(int i=0;i<nSquadrePresenti;i++)
         {
@@ -77,8 +95,10 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente();
     }
     
-    public Squadra getSquadra(int id) throws EccezioneIDNonPresente
+    public Squadra getSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
     {
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         Squadra sq;
         for(int i=0;i<nSquadrePresenti;i++)
         {
@@ -91,9 +111,10 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente(); 
     }
     
-    public void rimuoviCestista(int id) throws EccezioneIDNonPresente
+    public void rimuoviCestista(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
     {
-        Cestista cest;
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getCestista(i).getIDCestista()==id)
@@ -104,9 +125,10 @@ public class Campionato implements Serializable
         throw new EccezioneIDNonPresente(); 
     }
     
-    public void rimuoviSquadra(int id) throws EccezioneIDNonPresente
+    public void rimuoviSquadra(int id) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
     {
-        Squadra sq;
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         for(int i=0;i<nSquadrePresenti;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==id)
@@ -172,6 +194,122 @@ public class Campionato implements Serializable
             s+=elencoSquadre[i].toString();
         }
         return s;
+    }
+    
+    private int getIDSquadraAppartenenza(int idCestista) throws EccezioneIDNonPresente, EccezioneNessunaSquadra
+    {
+        for(int i=0;i<nSquadrePresenti;i++)
+        {
+            for(int j=0;j<elencoSquadre[i].getNCestistiPresenti();j++)
+            {
+                if(elencoSquadre[i].getCestista(j)==this.getCestista(idCestista))
+                    return i;
+            }
+        }
+        throw new EccezioneIDNonPresente();
+    }
+    
+    public void salvaDatiCSV(String nomeFile) throws IOException, EccezioneNessunaSquadra
+    {
+        TextFile f1;
+        Cestista cest;
+        f1= new TextFile(nomeFile,'W'); //Apro ill file in scrittura
+        String datiCestista;
+        for(int i=0;i<this.getNSquadrePresenti();i++)
+        {
+                try 
+                {
+                    cest=this.getCestista(i);
+                    datiCestista=cest.toString()+";"+this.getIDSquadraAppartenenza(i);
+                    f1.toFile(datiCestista);
+                }                       
+                catch (FileException ex) 
+                {
+                    //non succederà mai
+                    //mostra il messaggio dell'eccezione
+                    System.out.println(ex.toString());
+                } 
+                catch (EccezioneIDNonPresente ex) 
+                {
+                    //non fare  niente e vai avanti
+                }
+        }
+        f1.closeFile();  //Tutti i cestisti sono stati scritti
+        System.out.println("Esportazione avvenuta correttamente.");       
+    }
+    
+    public void caricaDatiCSV(String nomeFile) throws IOException
+    {
+        String rigaLetta;
+        String[] datiCestista;
+        Cestista cest;
+        TextFile f1;
+        int gg,mm,aaaa,id,idSquadra;
+        double h;
+        LocalDate dataNascita;
+        String nome,cognome;
+        //Importa da file CSV
+        f1=new TextFile(nomeFile,'R');
+        do
+        {
+            try
+            {
+                rigaLetta=f1.fromFile();
+                datiCestista=rigaLetta.split(";");
+                id=Integer.parseInt(datiCestista[0]);
+                nome=datiCestista[1];
+                cognome=datiCestista[2];
+                dataNascita=LocalDate.parse(datiCestista[3]);
+                h=Double.parseDouble(datiCestista[4]);
+                idSquadra=Integer.parseInt(datiCestista[5]);
+                cest=new Cestista(nome,cognome,dataNascita,h);
+                try 
+                {
+                    this.setCestista(idSquadra, cest);
+                } 
+                catch (EccezioneRosaCompleta ex) 
+                {
+                    //non succederà mai
+                } 
+                catch (EccezioneIDNonPresente ex) 
+                {
+                    //non succederà mai
+                } 
+                catch (EccezioneNessunaSquadra ex) 
+                {
+                    //boh
+                }
+            }
+            catch (FileException ex) 
+            {
+                //fine del file
+                f1.closeFile();
+                System.out.println("Fine operazione di caricamento");
+                break;
+            } 
+            catch (EccezioneAltezza ex) 
+            {
+                //non succederà mai perché l'altezza è salvata correttamente sul file
+            }
+        }while(true);                          
+    }
+    
+    public void salvaDatiBIN(String nomeFile) throws FileNotFoundException, IOException
+    {
+        ObjectOutputStream writer=new ObjectOutputStream(new FileOutputStream(nomeFile));
+        writer.writeObject(this);
+        writer.flush();
+        writer.close();
+    }
+    
+    public Campionato caricaDatiBIN(String nomeFile) throws FileNotFoundException, IOException, ClassNotFoundException
+    {
+        Campionato camp;
+        ObjectInputStream reader=new ObjectInputStream(new FileInputStream(nomeFile));
+        camp=(Campionato)reader.readObject();
+        reader.close();
+        
+        return camp;
     }
     
     

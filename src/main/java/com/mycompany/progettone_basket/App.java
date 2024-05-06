@@ -7,11 +7,13 @@ package com.mycompany.progettone_basket;
 import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneCampionatoCompleto;
 import Eccezioni.EccezioneIDNonPresente;
+import Eccezioni.EccezioneNessunaSquadra;
 import Eccezioni.EccezioneRosaCompleta;
 import Eccezioni.FileException;
 import Utilita.ConsoleInput;
 import Utilita.Menu;
 import Utilita.TextFile;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.logging.Level;
@@ -47,8 +49,9 @@ public class App {
         Cestista cest;
         int attore=0;
         int sceltaUtente=0;
+        LocalDate dataNascita;
         int id,gg,mm,aaaa,pti;
-        String nomeFileCSV = null,nomeFileBinario;
+        String nomeFileCSV = null,nomeFileBinario = null;
         TextFile f1;
         double h;
         String nome,cognome;
@@ -91,15 +94,24 @@ public class App {
                                     sq=NBA.getSquadra(id);
                                     System.out.println(sq.toString());
                                 }
-                                catch (IOException ex) {
+                                catch (IOException ex) 
+                                {
                                     System.out.println("Errore nell'inserimento");
-                                } catch (NumberFormatException ex) {
+                                } 
+                                catch (NumberFormatException ex) 
+                                {
                                     System.out.println("ID inserito non valido");
-                                }catch(EccezioneIDNonPresente ex)
+                                }
+                                catch(EccezioneIDNonPresente ex)
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
                                 }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                                 break;
+
                             case 3: //visualizza cestista
                                System.out.print("Inserisci ID cestista da visualizzare-->");
                                 try 
@@ -119,6 +131,9 @@ public class App {
                                 catch(EccezioneIDNonPresente ex)
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
+                                }catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
                                 }
                                 break;
                             case 4: //add cestista
@@ -142,7 +157,8 @@ public class App {
                                     cest=new Cestista(nome,cognome,LocalDate.of(aaaa,mm,gg),h);
                                     NBA.setCestista(id,cest);
                                 } 
-                                catch (IOException ex) {
+                                catch (IOException ex) 
+                                {
                                     System.out.println("Errore nell'inserimento dei dati");
                                 }
                                 catch(EccezioneAltezza ex)
@@ -160,8 +176,13 @@ public class App {
                                 catch (NumberFormatException ex)
                                 {
                                     System.out.println("Input non valido");
+                                } 
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Aggiungi una squadra prima di aggiungere un cestista");
                                 }
                                 break;
+
                             case 5: //add squadra
                                 try 
                                 {
@@ -203,8 +224,13 @@ public class App {
                                 catch (EccezioneIDNonPresente ex) 
                                 {
                                     System.out.println("Giocatore non trovato");
+                                } 
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto"); 
                                 }
                                 break;
+
                             case 7: //rimuovi squadra    
                                 try
                                 {
@@ -223,6 +249,10 @@ public class App {
                                 catch (NumberFormatException ex) 
                                 {
                                     System.out.println("Input non valido");
+                                }
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto"); 
                                 }
                                 break;
                             case 8: //altezze crescenti                               
@@ -244,7 +274,7 @@ public class App {
                                 catch (NumberFormatException ex) 
                                 {
                                     System.out.println("Input non valido");
-                                }
+                                }                               
                                 break;
                             case 9: //altezze decrescenti
                                 try
@@ -290,94 +320,159 @@ public class App {
                                 {
                                     System.out.println("Input non valido");
                                 }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                             case 11: //modifica cestista
-                                //aggiungere a diagramma delle classi e sistemare parametri di modificaPunteggio
+                                String[] vociModifica={"Annulla","Nome","Cognome","Data di nascita","altezza"};
+                                try
+                                {         
+                                    System.out.print("Inserisci ID cestista da modificare-->");
+                                    id=tastiera.readInt();
+                                    for(int i=0;i<NBA.getNSquadrePresenti();i++)
+                                    {   
+                                        sq=new Squadra(NBA.getSquadra(i));
+                                        for(int j=0;j<sq.getNCestistiPresenti();j++)
+                                        {
+                                            if(sq.getCestista(j).getIDCestista()==id)
+                                            {
+                                                System.out.println(sq.getCestista(j).toString());
+                                                m=new Menu(voci);
+                                                sceltaUtente=m.sceltaMenu();
+                                                switch (sceltaUtente) 
+                                                {
+                                                    case 0: //esci
+                                                        break;
+                                                    case 1: //modifica nome
+                                                        System.out.print("Nuovo nome-->");
+                                                        nome=tastiera.readString();
+                                                        sq.getCestista(j).setNome(nome);
+                                                        break;
+                                                    case 2: //modifica cognome
+                                                        System.out.print("Nuovo cognome-->");
+                                                        cognome=tastiera.readString();
+                                                        sq.getCestista(j).setCognome(cognome);
+                                                        break;
+                                                    case 3: //modifica data di nascita
+                                                        System.out.println("Nuova data:");
+                                                        System.out.print("GG-->");
+                                                        gg=tastiera.readInt();
+                                                        System.out.print("MM-->");
+                                                        mm=tastiera.readInt();
+                                                        System.out.print("AAAA-->");
+                                                        aaaa=tastiera.readInt();
+                                                        sq.getCestista(j).setDataNascita(LocalDate.of(aaaa,mm,gg));
+                                                        break;
+                                                    case 4: //modifica altezza
+                                                        System.out.print("Nuova altezza-->");
+                                                        h=tastiera.readDouble();
+                                                        sq.getCestista(j).setAltezza(h);
+                                                        break;
+                                                }
+                                            }
+                                            System.out.println("Cestista modificato:\n"+sq.getCestista(j));
+                                        }
+                                    }
+                                    
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Errore di input");
+                                }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
+                                catch (NumberFormatException ex) 
+                                {
+                                    System.out.println("Input non corretto");
+                                } 
+                                catch (EccezioneIDNonPresente ex) 
+                                {
+                                    System.out.println("Cestista non presente");
+                                } 
+                                catch (EccezioneAltezza ex) 
+                                {
+                                    System.out.println("Altezza non valida");
+                                }
                                 break;
                             case 12: //salva dati CSV
                                 try 
                                 {
-                                    f1= new TextFile(nomeFileCSV,'W'); //Apro ill file in scrittura
-                                    String datiCestista;
-                                    for(int i=0;i<NBA.getNSquadrePresenti();i++)
-                                    {
-                                            try 
-                                            {
-                                                cest=NBA.getCestista(i);
-                                                datiCestista=cest.toString();
-                                                f1.toFile(datiCestista);
-                                            }                       
-                                            catch (FileException ex) 
-                                            {
-                                                //non succederà mai
-                                                //mostra il messaggio dell'eccezione
-                                                System.out.println(ex.toString());
-                                            } 
-                                            catch (EccezioneIDNonPresente ex) 
-                                            {
-                                                //non fare  niente e vai avanti
-                                            }
-                                    }
-                                    f1.closeFile();  //Tutti i cestisti sono stati scritti
+                                    NBA.salvaDatiCSV(nomeFileCSV);
                                     System.out.println("Esportazione avvenuta correttamente.");
                                 } 
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Impossibile accedere al file");
                                 }
+                                catch(NullPointerException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                } 
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    //
+                                }
                                 break;                               
+                               
                             case 13: //carica dati CSV
-                                /*String rigaLetta;
-                                String[] datiCestista;
+                                try
+                                {
+                                    NBA.caricaDatiCSV(nomeFileCSV);
+                                    System.out.println("Fine operazione di caricamento");
+                                }
+                                catch(IOException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                }
+                                catch(NullPointerException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                }
+                                break;                               
+                            case 14: //salva dati BIN
                                 try 
-                                {   
-                                    //Importa da file CSV
-                                    f1=new TextFile(nomeFileCSV,'R');
-                                    do
-                                    {
-                                        try
-                                        {
-                                            rigaLetta=f1.fromFile();
-                                            datiCestista=rigaLetta.split(";");
-                                            id=Integer.parseInt(datiCestista[0]);
-                                            nome=datiCestista[1];
-                                            cognome=datiCestista[2];
-                                            //dataNascita=datiCestista[3]; capire come salvare data su file per caricarla meglio
-                                            h=Double.parseDouble(datiCestista[4]);
-                                            cest=new Cestista(nome,cognome,LocalDate.of(1111,11,1),h);
-                                            try 
-                                            {
-                                                s1.setLibro(lib, ripiano, posizione);
-                                            } 
-                                            catch (EccezioneRipianoNonValido ex) 
-                                            {
-                                                System.out.println("Errore: ripiano "+ripiano+ " non corretto per il volume "+titolo);
-                                            } 
-                                            catch (EccezionePosizioneNonValida ex) 
-                                            {
-                                                 System.out.println("Errore: posizione "+posizione+ " non corretta per il volume "+titolo);
-                                            }
-                                            catch (EccezionePosizioneOccupata ex) 
-                                            {
-                                                 System.out.println("Nel ripiano  "+ripiano+ " e posizione "+posizione+" è già presente un volume. Il volume "+titolo+ " non sarà posizionato nello scaffale.");
-                                            }
-                                        }
-                                        catch (FileException ex) 
-                                        {
-                                            //fine del file
-                                            f1.closeFile();
-                                            System.out.println("Fine operazione di caricamento");
-                                            break;
-                                        }
-                                    }while(true);                
+                                {
+                                    NBA.salvaDatiBIN(nomeFileBinario);
+                                    System.out.println("Salvataggio avvenuto correttamente");
+                                } 
+                                catch (FileNotFoundException ex) 
+                                {
+                                    System.out.println("File non trovato");
                                 } 
                                 catch (IOException ex) 
                                 {
-                                    System.out.println("Impossibile accedere al file!");
-                                }*/
-                                break;                               
-                            case 14: //salva dati BIN
+                                     System.out.println("Impossibile accedere al file");
+                                }
+                                catch(NullPointerException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                }
                                 break;
                             case 15: //carica dati BIN
+                                try 
+                                {
+                                    NBA=NBA.caricaDatiBIN(nomeFileBinario);
+                                    System.out.println("Caricamento effettuato correttamente");
+                                } 
+                                catch (FileNotFoundException ex) 
+                                {
+                                    System.out.println("File non trovato");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                     System.out.println("Impossibile accedere al file");
+                                } 
+                                catch (ClassNotFoundException ex) 
+                                {
+                                    System.out.println("Impossibile leggere il dato memorizzato");
+                                }
+                                catch(NullPointerException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                }
                                 break;    
                         }           
                     }while(sceltaUtente!=0);          
@@ -410,11 +505,17 @@ public class App {
                                 }
                                 catch (IOException ex) {
                                     System.out.println("Errore nell'inserimento");
-                                } catch (NumberFormatException ex) {
+                                }
+                                catch (NumberFormatException ex) {
                                     System.out.println("ID inserito non valido");
-                                }catch(EccezioneIDNonPresente ex)
+                                }
+                                catch(EccezioneIDNonPresente ex)
                                 {
                                     System.out.println("L'ID inserito non è presente nel campionato");
+                                }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
                                 }
                             case 3: //visualizza cestista
                                System.out.print("Inserisci ID cestista da visualizzare-->");
@@ -428,7 +529,11 @@ public class App {
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Errore nell'inserimento");
-                                } 
+                                }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                                 catch (NumberFormatException ex) 
                                 {
                                     System.out.println("ID inserito non valido");
@@ -480,14 +585,65 @@ public class App {
                                 }
                                 break; 
                             case 6: //salva dati CSV
-                                break;
+                                try 
+                                {
+                                    NBA.salvaDatiCSV(nomeFileCSV);
+                                    System.out.println("Esportazione avvenuta correttamente.");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    System.out.println("Impossibile accedere al file");
+                                }
+                                catch (EccezioneNessunaSquadra ex)
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
+                                break;                               
                             case 7: //carica dati CSV
-                                break;
+                                try
+                                {
+                                    NBA.caricaDatiCSV(nomeFileCSV);
+                                    System.out.println("Fine operazione di caricamento");
+                                }
+                                catch(IOException ex)
+                                { 
+                                    System.out.println("Errore! Impossibile caricare volumi dal file!");
+                                }
+                                break;                               
                             case 8: //salva dati BIN
+                                try 
+                                {
+                                    NBA.salvaDatiBIN(nomeFileBinario);
+                                    System.out.println("Salvataggio avvenuto correttamente");
+                                } 
+                                catch (FileNotFoundException ex) 
+                                {
+                                    System.out.println("File non trovato");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                     System.out.println("Impossibile accedere al file");
+                                }
                                 break;
                             case 9: //carica dati BIN
-                                break; 
-                            
+                                try 
+                                {
+                                    NBA=NBA.caricaDatiBIN(nomeFileBinario);
+                                    System.out.println("Caricamento effettuato correttamente");
+                                } 
+                                catch (FileNotFoundException ex) 
+                                {
+                                    System.out.println("File non trovato");
+                                } 
+                                catch (IOException ex) 
+                                {
+                                     System.out.println("Impossibile accedere al file");
+                                } 
+                                catch (ClassNotFoundException ex) 
+                                {
+                                    System.out.println("Impossibile leggere il dato memorizzato");
+                                }
+                                break;      
                         }
                     }while(sceltaUtente!=0);
                     break;

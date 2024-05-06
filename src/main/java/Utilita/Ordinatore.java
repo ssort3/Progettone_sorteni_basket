@@ -78,8 +78,12 @@ public class Ordinatore
         {
             for(int j=i+1;j<lunghezza;j++)
             {
-                if(vOrdinato[j].getPunti()<vOrdinato[i].getPunti())
+                if(vOrdinato[j]!=null)
+                {
+                    if(vOrdinato[j].getPunti()<vOrdinato[i].getPunti())
                     scambiaSquadra(vOrdinato,i,j);
+                }
+                
             }
         }
         return vOrdinato;
