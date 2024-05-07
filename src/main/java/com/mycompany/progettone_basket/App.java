@@ -16,6 +16,7 @@ import Utilita.Menu;
 import Utilita.TextFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -176,7 +177,11 @@ public class App {
                                 catch(EccezioneAltezza ex)
                                 {
                                     System.out.println("L'altezza inserita non  valida per il campionato, altezza minima 1,70 m");
-                                } 
+                                }
+                                catch (DateTimeException ex)
+                                {
+                                    System.out.println("Data inserita non valida");
+                                }
                                 catch (EccezioneRosaCompleta ex) 
                                 {
                                     System.out.println("La rosa della squadra è al completo, cestista non inserito");

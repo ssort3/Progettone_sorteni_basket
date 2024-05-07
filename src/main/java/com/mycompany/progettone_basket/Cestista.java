@@ -126,7 +126,7 @@ public class Cestista implements Serializable
      * Setter dell'attributo dataNascita
      * @param dataNascita assegnato all'attributo dataNascita del cestista in creazione
      */
-    public void setDataNascita(LocalDate dataNascita) 
+    public void setDataNascita(LocalDate dataNascita)
     {
         this.dataNascita = dataNascita;
     }

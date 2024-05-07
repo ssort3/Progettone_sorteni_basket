@@ -213,7 +213,7 @@ public class Squadra implements Serializable
      * @param pos posizione da cui parte la scalata
      * @throws NullPointerException in caso la posizione fosse vuota
      */
-    public void eliminaPosizione(int pos) throws NullPointerException//vedere se in uml c'è public o private
+    private void eliminaPosizione(int pos) throws NullPointerException//vedere se in uml c'è public o private
     {
         for(int i=pos;i<nCestistiPresenti;i++)
         {
