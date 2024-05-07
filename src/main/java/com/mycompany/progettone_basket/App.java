@@ -54,7 +54,8 @@ public class App {
         int sceltaUtente=0;
         LocalDate dataNascita;
         int id,gg,mm,aaaa,pti;
-        String nomeFileCSV = null,nomeFileBinario = null;
+        String nomeFileCSV = "Campionato.csv";
+        String nomeFileBinario = "Campionato.bin";
         TextFile f1;
         double h;
         String nome,cognome;
@@ -146,8 +147,9 @@ public class App {
                                 }catch (EccezioneNessunaSquadra ex)
                                 {
                                     System.out.println("Campionato vuoto");
-                                }
+                                } 
                                 break;
+
                             case 4: //add cestista
                                 try 
                                 {
@@ -317,8 +319,13 @@ public class App {
                                 catch (NumberFormatException ex) 
                                 {
                                     System.out.println("Input non valido");
-                                }                               
+                                } 
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                                 break;
+
                             case 9: //altezze decrescenti
                                 try
                                 {
@@ -338,6 +345,10 @@ public class App {
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Errore di input");
+                                }
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto");
                                 }
                                 catch (EccezioneIDNonValido ex) 
                                 {
@@ -437,7 +448,7 @@ public class App {
                                         catch(EccezioneIDNonValido ex)
                                         {
                                             //non sucederà mai
-                                        }
+                                        } 
                                     }
                                     
                                 } 
@@ -466,7 +477,6 @@ public class App {
                                 try 
                                 {
                                     NBA.salvaDatiCSV(nomeFileCSV);
-                                    System.out.println("Esportazione avvenuta correttamente.");
                                 } 
                                 catch (IOException ex) 
                                 {
@@ -478,19 +488,19 @@ public class App {
                                 }
                                 catch(NullPointerException ex)
                                 { 
-                                    System.out.println("Errore! Impossibile caricare dati dal file!");
+                                    System.out.println("Errore! Impossibile salvare dati sul file!");
                                 } 
                                 catch (EccezioneNessunaSquadra ex) 
                                 {
                                     //
-                                }
+                                } 
                                 break;                               
+                               
                                
                             case 13: //carica dati CSV
                                 try
                                 {
                                     NBA.caricaDatiCSV(nomeFileCSV);
-                                    System.out.println("Fine operazione di caricamento");
                                 }
                                 catch(IOException ex)
                                 { 
@@ -509,7 +519,7 @@ public class App {
                                 try 
                                 {
                                     NBA.salvaDatiBIN(nomeFileBinario);
-                                    System.out.println("Salvataggio avvenuto correttamente");
+                                    System.out.println("Dati salvati correttamente");
                                 } 
                                 catch (FileNotFoundException ex) 
                                 {
@@ -528,7 +538,7 @@ public class App {
                                 try 
                                 {
                                     NBA=NBA.caricaDatiBIN(nomeFileBinario);
-                                    System.out.println("Caricamento effettuato correttamente");
+                                    System.out.println("Fine operazioni di caricamento");
                                 } 
                                 catch (FileNotFoundException ex) 
                                 {
@@ -643,6 +653,10 @@ public class App {
                                 {
                                     System.out.println("ID non valido");
                                 }
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Errore di input");
@@ -667,7 +681,11 @@ public class App {
                                 catch (EccezioneIDNonPresente ex)
                                 {
                                     System.out.println("Squadra non trovata");
-                                } 
+                                }
+                                catch (EccezioneNessunaSquadra ex) 
+                                {
+                                    System.out.println("Campionato vuoto");
+                                }
                                 catch (IOException ex) 
                                 {
                                     System.out.println("Errore di input");
@@ -685,7 +703,6 @@ public class App {
                                 try 
                                 {
                                     NBA.salvaDatiCSV(nomeFileCSV);
-                                    System.out.println("Esportazione avvenuta correttamente.");
                                 } 
                                 catch (IOException ex) 
                                 {
@@ -708,7 +725,6 @@ public class App {
                                 try
                                 {
                                     NBA.caricaDatiCSV(nomeFileCSV);
-                                    System.out.println("Fine operazione di caricamento");
                                 }
                                 catch(IOException ex)
                                 { 
@@ -727,7 +743,7 @@ public class App {
                                 try 
                                 {
                                     NBA.salvaDatiBIN(nomeFileBinario);
-                                    System.out.println("Salvataggio avvenuto correttamente");
+                                    System.out.println("Dati salvati correttamente");
                                 } 
                                 catch (FileNotFoundException ex) 
                                 {
@@ -746,7 +762,7 @@ public class App {
                                 try 
                                 {
                                     NBA=NBA.caricaDatiBIN(nomeFileBinario);
-                                    System.out.println("Caricamento effettuato correttamente");
+                                    System.out.println("Fine operazione di caricamento");
                                 } 
                                 catch (FileNotFoundException ex) 
                                 {

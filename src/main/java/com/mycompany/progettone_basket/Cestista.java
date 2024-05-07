@@ -76,6 +76,15 @@ public class Cestista implements Serializable
         idCestista=nextID;
         nextID++;
     }
+    
+    /**
+     * Setter privato di nextID utilizzato da caricaDatiBIN
+     * @param id valore attribuito a nextID
+     */
+    public static void setNextID(int id)
+    {
+        nextID=id;
+    }
 
     /**
      * Getter dell'attributo nome

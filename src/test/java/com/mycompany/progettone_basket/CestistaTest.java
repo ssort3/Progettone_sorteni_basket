@@ -62,7 +62,7 @@ public class CestistaTest {
      * @throws EccezioneAltezza
      */
     @Test
-    public void testSetGetNome() throws EccezioneAltezza 
+    public void testNome() throws EccezioneAltezza 
     {
         String atteso="mario";
         c1.setNome("mario");
@@ -75,7 +75,7 @@ public class CestistaTest {
      * @throws EccezioneAltezza
      */
     @Test
-    public void testSetGetCognome() throws EccezioneAltezza 
+    public void testCognome() throws EccezioneAltezza 
     {
         String atteso="lao";
         c1.setCognome("lao");

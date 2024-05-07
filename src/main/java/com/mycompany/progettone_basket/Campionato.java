@@ -83,15 +83,16 @@ public class Campionato implements Serializable
             throw new EccezioneNessunaSquadra();
         if(idSquadra<0)
             throw new EccezioneIDNonValido();
-        for(int i=0;i<nSquadrePresenti;i++)
+        for(int i=0;i<nSquadrePresenti+1;i++)
         {
             if(elencoSquadre[i].getIdSquadra()==idSquadra)
             {
                 elencoSquadre[i].setCestista(c);
                 return;
             }
-            throw new EccezioneIDNonPresente();
+            
         }
+        throw new EccezioneIDNonPresente();
     }
     
     /**
@@ -260,9 +261,11 @@ public class Campionato implements Serializable
      * @throws EccezioneIDNonPresente se la squadra non è presente
      * @throws EccezioneIDNonValido se l'ID inserito è negativo
      */
-    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido
+    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido, EccezioneNessunaSquadra
     {
         Cestista[] vOrdinato;
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         if(id<0)
             throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
@@ -283,9 +286,11 @@ public class Campionato implements Serializable
      * @throws EccezioneIDNonPresente se la squadra non è presente
      * @throws EccezioneIDNonValido se l'ID inserito è negativo
      */
-    public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido
+    public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido, EccezioneNessunaSquadra
     {
         Cestista[] vOrdinato;
+        if(nSquadrePresenti==0)
+            throw new EccezioneNessunaSquadra();
         if(id<0)
             throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
@@ -343,6 +348,7 @@ public class Campionato implements Serializable
      * @throws IOException se silecchia stacca la spina del pc
      * @throws EccezioneNessunaSquadra se il campionato è vuoto
      * @throws EccezioneIDNonValido se id negativo
+     * @throws Eccezioni.EccezioneIDNonPresente se id non presente
      */
     public void salvaDatiCSV(String nomeFile) throws IOException, EccezioneNessunaSquadra, EccezioneIDNonValido
     {
@@ -352,22 +358,33 @@ public class Campionato implements Serializable
         String datiCestista;
         for(int i=0;i<this.getNSquadrePresenti();i++)
         {
-                try 
+            try
+            {
+                for(int j=0;j<getSquadra(i).getNCestistiPresenti();j++)
                 {
-                    cest=this.getCestista(i);
-                    datiCestista=cest.toString()+";"+this.getIDSquadraAppartenenza(i);
-                    f1.toFile(datiCestista);
-                }                       
-                catch (FileException ex) 
-                {
-                    //non succederà mai
-                    //mostra il messaggio dell'eccezione
-                    System.out.println(ex.toString());
+                
+                    try 
+                    {
+                        cest=this.getCestista(i);
+                        datiCestista=cest.toString()+";"+this.getIDSquadraAppartenenza(i);
+                        f1.toFile(datiCestista);
+                    }                       
+                    catch (FileException ex) 
+                    {
+                        //non succederà mai
+                        //mostra il messaggio dell'eccezione
+                        System.out.println(ex.toString());
+                    } 
+                    catch (EccezioneIDNonPresente ex) 
+                    {
+                        //non fare  niente e vai avanti
+                    }
                 } 
-                catch (EccezioneIDNonPresente ex) 
-                {
-                    //non fare  niente e vai avanti
-                }
+            }
+            catch(EccezioneIDNonPresente ex)
+            {
+                //non fare niente e vai avanti
+            }          
         }
         f1.closeFile();  //Tutti i cestisti sono stati scritti
         System.out.println("Esportazione avvenuta correttamente.");       
@@ -457,13 +474,13 @@ public class Campionato implements Serializable
      * @throws IOException
      * @throws ClassNotFoundException 
      */
-    public Campionato caricaDatiBIN(String nomeFile) throws FileNotFoundException, IOException, ClassNotFoundException
+    public Campionato caricaDatiBIN(String nomeFile) throws FileNotFoundException, ClassNotFoundException, IOException
     {
         Campionato camp;
         ObjectInputStream reader=new ObjectInputStream(new FileInputStream(nomeFile));
         camp=(Campionato)reader.readObject();
         reader.close();
-        
+        Squadra.setNextID(camp.getNSquadrePresenti()+1);
         return camp;
     }
     

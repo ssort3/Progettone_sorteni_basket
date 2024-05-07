@@ -72,6 +72,15 @@ public class Squadra implements Serializable
     }
     
     /**
+     * Setter privato di nextID utilizzato da caricaDatiBIN
+     * @param id valore attribuito a nextID
+     */
+    public static void setNextID(int id)
+    {
+        nextID=id;
+    }
+    
+    /**
      * Getter dell'attributo punti
      * @return punteggio della squadra
      */
@@ -172,10 +181,13 @@ public class Squadra implements Serializable
      * Restituisce un cestista della squadra
      * @param id ID del cestista da restituire
      * @return il cestista con id corrispondente a quello indicato dal parametro
-     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nella squadra 
+     * @throws EccezioneIDNonPresente se l'ID cercato non è presente nella squadra
+     * @throws EccezioneIDNonValido se l'ID cercato è negativo
      */
-    public Cestista getCestista(int id) throws EccezioneIDNonPresente
+    public Cestista getCestista(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido
     {
+        if(id<0)
+            throw new EccezioneIDNonValido();
         Cestista cest;
         for(int i=0;i<nCestistiPresenti;i++)
         {
@@ -225,8 +237,9 @@ public class Squadra implements Serializable
     /**
      * Ordina i cestisti di una squadra dal più basso al più alto
      * @return un array con i cestisti ordinati
+     * @throws EccezioneIDNonValido se l'id fosse negativo
      */
-    public Cestista[] ordinaAltezzaCrescente()
+    public Cestista[] ordinaAltezzaCrescente() throws EccezioneIDNonValido
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
@@ -255,8 +268,9 @@ public class Squadra implements Serializable
     /**
      * Ordina i cestisti di una squadra dal più alto al più basso
      * @return un array con i cestisti ordinati
+     * @throws EccezioneIDNonValido se l'id fosse negativo
      */
-    public Cestista[] ordinaAltezzaDerescente()
+    public Cestista[] ordinaAltezzaDerescente() throws EccezioneIDNonValido
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
@@ -282,7 +296,20 @@ public class Squadra implements Serializable
         return vOrdinato;
     }
     
-    
+    /**
+     * Ridefinizione del metodo equals
+     * @param obj oggeto generico
+     * @return true se gli attributi di s coincidono con quelli di this, altrimenti return false
+     * 
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        Squadra s;
+        s=(Squadra)obj;
+        return ((s.getIdSquadra()==idSquadra)&&(s.getNomeSquadra()==nomeSquadra)
+                &&(s.getPunti()==punti)&&(s.getNCestistiPresenti()==nCestistiPresenti));
+    }
     
     
     
