@@ -5,10 +5,13 @@
 package com.mycompany.progettone_basket;
 
 import Eccezioni.EccezioneAltezza;
+import com.mycompany.progettone_basket.Cestista;
 import java.time.LocalDate;
+import java.time.Month;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 /**
  *
@@ -16,22 +19,24 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public class CestistaTest {
     
-    private Cestista c1;
-    private Cestista c2;
+    private static Cestista c1;
+    private static Cestista c2;
+    private Cestista c3;
     
     public CestistaTest() { 
     }
     
     /**
-     * Creo un cestista standard prima di ogni metodo di test
-     * @throws EccezioneAltezza 
+     *
+     * @throws Exception
      */
-    @BeforeEach
-    public void Cestista() throws EccezioneAltezza
+    @BeforeAll
+    public static void inizio() throws Exception
     {
         c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
+        c2=new Cestista("pierone","lao",LocalDate.of(1,1,1),2);
     }
-    
+        
     /**
      * Test of getIDCestista method, of class Cestista.
      * @throws EccezioneAltezza
@@ -39,6 +44,7 @@ public class CestistaTest {
     @Test
     public void testGetIDCestista() throws EccezioneAltezza 
     {
+        c1=new Cestista(c1);
         int atteso=1; //id atteso
         int attuale=c1.getIDCestista();
         assertEquals(atteso,attuale);
@@ -51,8 +57,9 @@ public class CestistaTest {
     @Test
     public void testGetIDCestistaDUE() throws EccezioneAltezza 
     {
+        c1=new Cestista(c1);
         int atteso=2; //id atteso
-        c2=new Cestista("pierone","lao",LocalDate.of(1,1,1),2);
+        c2=new Cestista(c2);
         int attuale=c2.getIDCestista();
         assertEquals(atteso,attuale);
     }
@@ -64,6 +71,7 @@ public class CestistaTest {
     @Test
     public void testNome() throws EccezioneAltezza 
     {
+        c1=new Cestista(c1);
         String atteso="mario";
         c1.setNome("mario");
         String attuale=c1.getNome();
@@ -77,6 +85,7 @@ public class CestistaTest {
     @Test
     public void testCognome() throws EccezioneAltezza 
     {
+        c1=new Cestista(c1);
         String atteso="lao";
         c1.setCognome("lao");
         String attuale=c1.getCognome();
@@ -91,6 +100,7 @@ public class CestistaTest {
     @Test
     public void testDataNascita() throws EccezioneAltezza 
     {
+        c1=new Cestista(c1);
         LocalDate atteso=LocalDate.of(2000,3,5);
         c1.setDataNascita(LocalDate.of(2000,3,5));
         LocalDate attuale=c1.getDataNascita();
@@ -105,6 +115,7 @@ public class CestistaTest {
     @Test
     public void testAltezza() throws  EccezioneAltezza
     {
+        c1=new Cestista(c1);
         double atteso=1.70;
         c1.setAltezza(1.70);
         double attuale=c1.getAltezza();
@@ -127,10 +138,13 @@ public class CestistaTest {
     @Test
     public void testToString() throws EccezioneAltezza 
     {
-        String atteso="1;luciano;pinna;0001-01-01;2";
-        String attuale=c1.toString();
+        c3=new Cestista("luciano","pinna",LocalDate.of(1,1,1),1.98);
+        String atteso="3;luciano;pinna;0001-01-01;1.98";
+        String attuale=c3.toString();
         assertEquals(atteso,attuale);
     }
+    
+    
 
     
 }

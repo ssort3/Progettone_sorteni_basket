@@ -116,7 +116,8 @@ public class Squadra implements Serializable
     {
         if(punti<0)
             this.punti=0;
-        this.punti=punti;
+        else
+            this.punti=punti;
     }
 
     /**
@@ -227,7 +228,7 @@ public class Squadra implements Serializable
      */
     private void eliminaPosizione(int pos) throws NullPointerException//vedere se in uml c'è public o private
     {
-        for(int i=pos;i<nCestistiPresenti;i++)
+        for(int i=pos;i<nCestistiPresenti-1;i++)
         {
             rosa[i]=rosa[i+1];
         }
@@ -239,7 +240,7 @@ public class Squadra implements Serializable
      * @return un array con i cestisti ordinati
      * @throws EccezioneIDNonValido se l'id fosse negativo
      */
-    public Cestista[] ordinaAltezzaCrescente() throws EccezioneIDNonValido
+    public Cestista[] ordinaAltezzaCrescente()
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
@@ -250,6 +251,10 @@ public class Squadra implements Serializable
                 vOrdinato[i]=this.getCestista(i);
             } 
             catch (EccezioneIDNonPresente ex) 
+            {
+                i--;
+            } 
+            catch (EccezioneIDNonValido ex) 
             {
                 //non fare nulla
             }
@@ -307,8 +312,28 @@ public class Squadra implements Serializable
     {
         Squadra s;
         s=(Squadra)obj;
-        return ((s.getIdSquadra()==idSquadra)&&(s.getNomeSquadra()==nomeSquadra)
-                &&(s.getPunti()==punti)&&(s.getNCestistiPresenti()==nCestistiPresenti));
+        
+        if((s.getIdSquadra()==idSquadra)&&(s.getNomeSquadra()==nomeSquadra)&&(s.getPunti()==punti)&&(s.getNCestistiPresenti()==nCestistiPresenti));
+        {
+            for(int i=0;i<nCestistiPresenti;i++)
+            {                
+                try 
+                {
+                    if(!(s.getCestista(i).equals(getCestista(i))))
+                        return false;
+                } 
+                catch (EccezioneIDNonPresente ex) 
+                {
+                    //
+                } 
+                catch (EccezioneIDNonValido ex) 
+                {
+                    //
+                }
+            }
+            return true;
+        }
+
     }
     
     

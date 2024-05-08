@@ -18,8 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -302,7 +300,6 @@ public class App {
                                     {
                                         vOrdinato[i].toString();
                                     }
-                                    break;
                                 }
                                 catch (EccezioneIDNonPresente ex)
                                 {
@@ -325,7 +322,6 @@ public class App {
                                     System.out.println("Campionato vuoto");
                                 }
                                 break;
-
                             case 9: //altezze decrescenti
                                 try
                                 {
@@ -494,9 +490,7 @@ public class App {
                                 {
                                     //
                                 } 
-                                break;                               
-                               
-                               
+                                break;                                                                      
                             case 13: //carica dati CSV
                                 try
                                 {

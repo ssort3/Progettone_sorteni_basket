@@ -7,10 +7,12 @@ package com.mycompany.progettone_basket;
 import Eccezioni.EccezioneAltezza;
 import Eccezioni.EccezioneIDNonPresente;
 import Eccezioni.EccezioneRosaCompleta;
+import com.mycompany.progettone_basket.Cestista;
+import com.mycompany.progettone_basket.Squadra;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 /**
  *
@@ -21,20 +23,25 @@ public class SquadraTest {
     public SquadraTest() {
     }
     
-    private Squadra s1;
-    private Squadra s2;
+    private static Squadra s1;
+    private static Squadra s2;
+    private static Squadra s3;
     private Cestista c;
     private Cestista c1;
     private Cestista c2;
+    private Squadra s4;
+    private Squadra s5;
 
     /**
      * Creo un cestista standard prima di ogni metodo di test
      * @throws EccezioneAltezza 
      */
-    @BeforeEach
-    public void Cestista() throws EccezioneAltezza
+    @BeforeAll
+    public static void Cestista() throws EccezioneAltezza
     {
         s1=new Squadra("lakers",10);
+        s2=new Squadra("heat",10);
+        s3=new Squadra("lakers",10);
     }
     
     /**
@@ -44,6 +51,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetNCestistiPresentiZero() 
     {
+        s1=new Squadra(s1);
         int atteso=0;
         int attuale=s1.getNCestistiPresenti();
         assertEquals(atteso,attuale);
@@ -58,6 +66,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetNCestistiPresentiMAX() throws EccezioneAltezza, EccezioneRosaCompleta 
     {
+        s1=new Squadra(s1);
         int atteso=15;
         for(int i=0;i<s1.getN_MAX_CESTISTI();i++)
         {
@@ -76,6 +85,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetNCestistiPresenti() throws EccezioneAltezza, EccezioneRosaCompleta 
     {
+        s1=new Squadra(s1);
         int atteso=1;
         c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         s1.setCestista(c);
@@ -89,6 +99,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetN_MAX_CESTISTI() 
     {
+        s1=new Squadra(s1);
         int atteso=15;
         int attuale=s1.getN_MAX_CESTISTI();
         assertEquals(atteso,attuale);
@@ -101,6 +112,7 @@ public class SquadraTest {
     @Test
     public void testGetIDSquadra()
     {
+        s1=new Squadra(s1);
         int atteso=1; //id atteso
         int attuale=s1.getIdSquadra();
         assertEquals(atteso,attuale);
@@ -113,8 +125,9 @@ public class SquadraTest {
     @Test
     public void testGetIDSquadraDUE()
     {
+        s1=new Squadra(s1);
         int atteso=2; //id atteso
-        s2=new Squadra("heat",10);
+        s2=new Squadra(s2);
         int attuale=s2.getIdSquadra();
         assertEquals(atteso,attuale);
     }
@@ -125,6 +138,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testPunti() 
     {
+        s1=new Squadra(s1);
         int atteso=25;
         s1.setPunti(25);
         int attuale=s1.getPunti();
@@ -138,6 +152,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testPuntiNegativo() 
     {
+        s1=new Squadra(s1);
         int atteso=0;
         s1.setPunti(-1);
         int attuale=s1.getPunti();
@@ -151,6 +166,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testPuntiZero() 
     {
+        s1=new Squadra(s1);
         int atteso=0;
         s1.setPunti(0);
         int attuale=s1.getPunti();
@@ -164,6 +180,7 @@ public class SquadraTest {
     @Test
     public void testNome() throws EccezioneAltezza 
     {
+        s1=new Squadra(s1);
         String atteso="nuggets";
         s1.setNomeSquadra("nuggets");
         String attuale=s1.getNomeSquadra();
@@ -177,8 +194,9 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testToStringZero() 
     {
-        String atteso="1;lakers;10";
-        String attuale=s1.toString();
+        s3=new Squadra(s3);
+        String atteso="3;lakers;10\n";
+        String attuale=s3.toString();
         assertEquals(atteso,attuale);
     }
     
@@ -191,10 +209,11 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testToString() throws EccezioneAltezza, EccezioneRosaCompleta 
     {
+        s3=new Squadra(s3);
         c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
-        s1.setCestista(c);
-        String atteso="1;lakers;10"+"\n"+"\t"+c.toString();
-        String attuale=s1.toString();
+        s3.setCestista(c);
+        String atteso="3;lakers;10"+"\n"+"\t"+c.toString()+"\n";
+        String attuale=s3.toString();
         assertEquals(atteso,attuale);
     }
     
@@ -207,28 +226,30 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testToStringMAX() throws EccezioneAltezza, EccezioneRosaCompleta 
     {
-        String atteso="1;lakers;10";
+        s3=new Squadra(s3);
+        String atteso="3;lakers;10\n";
         for(int i=0;i<15;i++)
         {
             c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
-            s1.setCestista(c);
-            atteso+="\n\t"+c.toString();
+            s3.setCestista(c);
+            atteso+="\t"+c.toString()+"\n";
         }
-        String attuale=s1.toString();
+        String attuale=s3.toString();
         assertEquals(atteso,attuale);
     }
 
     /**
      * Test of setCestista method, of class Squadra.
-     * Test con 0 cestisti presenti inizialmente
+     * Test con squadra vuota
      */
     @org.junit.jupiter.api.Test
-    public void testSetCestista() throws Exception
+    public void testSetCestistaVuoto() throws Exception
     {
+        s1=new Squadra(s1);
         c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         s1.setCestista(c);
         Cestista atteso=c;
-        Cestista attuale=s1.getCestista(1);
+        Cestista attuale=s1.getCestista(c.getIDCestista());
         assertEquals(atteso,attuale);       
     }
     
@@ -239,12 +260,13 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testSetCestistaUNO() throws Exception
     {
+        s1=new Squadra(s1);
         c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         c2=new Cestista("marco","evan",LocalDate.of(1,1,1),2);
         s1.setCestista(c1);
         s1.setCestista(c2);
         Cestista atteso=c2;
-        Cestista attuale=s1.getCestista(2);
+        Cestista attuale=s1.getCestista(c2.getIDCestista());
         assertEquals(atteso,attuale);       
     }
     
@@ -255,6 +277,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testSetCestistaMAX() throws Exception
     {
+        s1=new Squadra(s1);
         for(int i=0;i<15;i++)
         {
             c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
@@ -271,6 +294,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetCestistaVuoto() throws Exception
     {
+        s1=new Squadra(s1);
         EccezioneIDNonPresente eccezione = assertThrows(EccezioneIDNonPresente.class, () 
                 -> s1.getCestista(1));
     }
@@ -282,6 +306,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetCestistaMAX() throws Exception
     {
+        s1=new Squadra(s1);
         Cestista atteso = null;
         for(int i=0;i<15;i++)
         {
@@ -289,7 +314,7 @@ public class SquadraTest {
             atteso=new Cestista(c1);
             s1.setCestista(c1);
         }
-        Cestista attuale=s1.getCestista(15);
+        Cestista attuale=s1.getCestista(c1.getIDCestista());
         assertEquals(atteso,attuale);
     }
     
@@ -300,11 +325,26 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testGetCestistaUNO() throws Exception
     {
+        s1=new Squadra(s1);
         c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         s1.setCestista(c1);
         Cestista atteso=c1;
-        Cestista attuale=s1.getCestista(1);
+        Cestista attuale=s1.getCestista(c1.getIDCestista());
         assertEquals(atteso,attuale);
+    }
+    
+        /**
+     * Test of getCestista method, of class Squadra.
+     * Test con squadra contenente 1 cestista e cercando un ID non presente
+     */
+    @org.junit.jupiter.api.Test
+    public void testGetCestistaEccezione() throws Exception
+    {
+        s1=new Squadra(s1);
+        c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
+        s1.setCestista(c1);
+        EccezioneIDNonPresente eccezione = assertThrows(EccezioneIDNonPresente.class, () 
+                -> s1.getCestista(6));
     }
 
     /**
@@ -314,11 +354,12 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testRimuoviCestista() throws Exception 
     {
+        s1=new Squadra(s1);
         c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         s1.setCestista(c1);
-        s1.rimuoviCestista(1);
-        Cestista attuale=s1.getCestista(1);
-        assertNull(attuale);
+        s1.rimuoviCestista(c1.getIDCestista());
+        EccezioneIDNonPresente eccezione = assertThrows(EccezioneIDNonPresente.class, () 
+                -> s1.getCestista(c1.getIDCestista()));
     }
     
     /**
@@ -328,6 +369,7 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testRimuoviCestistaZero() throws Exception 
     {
+        s1=new Squadra(s1);
         EccezioneIDNonPresente eccezione = assertThrows(EccezioneIDNonPresente.class, () 
                 -> s1.rimuoviCestista(1));
     }
@@ -339,14 +381,15 @@ public class SquadraTest {
     @org.junit.jupiter.api.Test
     public void testRimuoviCestistaMAX() throws Exception 
     {
+        s1=new Squadra(s1);
         for(int i=0;i<15;i++)
         {
             c=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
             s1.setCestista(c);
         }
-        s1.rimuoviCestista(10);
-        Cestista attuale=s1.getCestista(10);
-        assertNull(attuale);
+        s1.rimuoviCestista(c.getIDCestista());
+        EccezioneIDNonPresente eccezione = assertThrows(EccezioneIDNonPresente.class, () 
+                ->s1.getCestista(c.getIDCestista()));
     }        
            
     /**

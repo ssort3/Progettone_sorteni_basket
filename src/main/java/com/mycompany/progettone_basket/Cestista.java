@@ -171,6 +171,20 @@ public class Cestista implements Serializable
         return idCestista+";"+nome+";"+cognome+";"+dataNascita+";"+altezza;
     }
     
+    /**
+     * Ridefinizione del metodo equals
+     * @param obj oggeto generico
+     * @return true se gli attributi di s coincidono con quelli di this, altrimenti return false
+     * 
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        Cestista cest;
+        cest=(Cestista)obj;
+        return((cest.getIDCestista()==idCestista)&&(cest.getNome()==nome)&&(cest.getCognome()==cognome)
+                &&(cest.getDataNascita()==dataNascita)&&(cest.getAltezza()==altezza));
+    }
     
     
     

@@ -225,7 +225,7 @@ public class Campionato implements Serializable
      */
     public void eliminaPosizione(int pos) throws NullPointerException
     {
-        for(int i=pos;i<nSquadrePresenti;i++)
+        for(int i=pos;i<nSquadrePresenti-1;i++)
         {
             elencoSquadre[i]=elencoSquadre[i+1];
         }
@@ -259,9 +259,10 @@ public class Campionato implements Serializable
      * @param id ID della squadra da ordinare
      * @return la squadra ordinata
      * @throws EccezioneIDNonPresente se la squadra non è presente
+     * @throws Eccezioni.EccezioneNessunaSquadra se campionato vuoto
      * @throws EccezioneIDNonValido se l'ID inserito è negativo
      */
-    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido, EccezioneNessunaSquadra
+    public Cestista[] ordinaAltezzaCrescente(int id) throws EccezioneNessunaSquadra, EccezioneIDNonValido, EccezioneIDNonPresente
     {
         Cestista[] vOrdinato;
         if(nSquadrePresenti==0)
@@ -270,11 +271,11 @@ public class Campionato implements Serializable
             throw new EccezioneIDNonValido();
         for(int i=0;i<nSquadrePresenti;i++)
         {
-            if(elencoSquadre[i].getIdSquadra()==id)
-            {
-                vOrdinato=elencoSquadre[i].ordinaAltezzaCrescente();
-                return vOrdinato;
-            }            
+                if(elencoSquadre[i].getIdSquadra()==id)
+                {
+                    vOrdinato=elencoSquadre[i].ordinaAltezzaCrescente();
+                    return vOrdinato;
+                }                        
         }
         throw new EccezioneIDNonPresente();
     }
