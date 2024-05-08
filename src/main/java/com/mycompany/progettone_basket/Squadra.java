@@ -238,7 +238,6 @@ public class Squadra implements Serializable
     /**
      * Ordina i cestisti di una squadra dal più basso al più alto
      * @return un array con i cestisti ordinati
-     * @throws EccezioneIDNonValido se l'id fosse negativo
      */
     public Cestista[] ordinaAltezzaCrescente()
     {
@@ -246,18 +245,7 @@ public class Squadra implements Serializable
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
         for(int i=0;i<getNCestistiPresenti();i++)
         {
-            try 
-            {
-                vOrdinato[i]=this.getCestista(i);
-            } 
-            catch (EccezioneIDNonPresente ex) 
-            {
-                i--;
-            } 
-            catch (EccezioneIDNonValido ex) 
-            {
-                //non fare nulla
-            }
+                vOrdinato[i]=rosa[i];
         }
         for(int i=0;i<getNCestistiPresenti()-1;i++)
         {
@@ -275,20 +263,13 @@ public class Squadra implements Serializable
      * @return un array con i cestisti ordinati
      * @throws EccezioneIDNonValido se l'id fosse negativo
      */
-    public Cestista[] ordinaAltezzaDerescente() throws EccezioneIDNonValido
+    public Cestista[] ordinaAltezzaDecrescente() throws EccezioneIDNonValido
     {
         //creo una copia di "s" e lo chiamo "vOrdinato"
         Cestista[] vOrdinato=new Cestista[getNCestistiPresenti()];
         for(int i=0;i<getNCestistiPresenti();i++)
         {
-            try 
-            {
-                vOrdinato[i]=this.getCestista(i);
-            } 
-            catch (EccezioneIDNonPresente ex) 
-            {
-                //non fare nulla
-            }
+                vOrdinato[i]=rosa[i];
         }
         for(int i=0;i<getNCestistiPresenti()-1;i++)
         {

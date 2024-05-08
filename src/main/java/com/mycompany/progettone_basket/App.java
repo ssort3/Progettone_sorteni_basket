@@ -295,10 +295,10 @@ public class App {
                                 {
                                     System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
                                     id=tastiera.readInt();
-                                    vOrdinato=NBA.ordinaAltezzaCrescente(id); //sistemare diagrama classi
+                                    vOrdinato=NBA.ordinaAltezzaCrescente(id); 
                                     for(int i=0;i<vOrdinato.length;i++)
                                     {
-                                        vOrdinato[i].toString();
+                                        System.out.println(vOrdinato[i].toString());
                                     }
                                 }
                                 catch (EccezioneIDNonPresente ex)
@@ -327,10 +327,10 @@ public class App {
                                 {
                                     System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
                                     id=tastiera.readInt();
-                                    vOrdinato=NBA.ordinaAltezzaDerescente(id); //sistemare diagrama classi
+                                    vOrdinato=NBA.ordinaAltezzaDecrescente(id); //sistemare diagrama classi
                                     for(int i=0;i<vOrdinato.length;i++)
                                     {
-                                        vOrdinato[i].toString();
+                                        System.out.println(vOrdinato[i].toString());
                                     }
                                     break;
                                 }
@@ -665,7 +665,7 @@ public class App {
                                 {
                                     System.out.print("Inserisci ID squadra di cui ordinare  i giocatori-->");
                                     id=tastiera.readInt();
-                                    vOrdinato=NBA.ordinaAltezzaDerescente(id); //sistemare diagrama classi
+                                    vOrdinato=NBA.ordinaAltezzaDecrescente(id); //sistemare diagrama classi
                                     for(int i=0;i<vOrdinato.length;i++)
                                     {
                                         vOrdinato[i].toString();

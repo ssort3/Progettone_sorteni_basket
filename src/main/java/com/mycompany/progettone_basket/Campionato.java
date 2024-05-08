@@ -287,7 +287,7 @@ public class Campionato implements Serializable
      * @throws EccezioneIDNonPresente se la squadra non è presente
      * @throws EccezioneIDNonValido se l'ID inserito è negativo
      */
-    public Cestista[] ordinaAltezzaDerescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido, EccezioneNessunaSquadra
+    public Cestista[] ordinaAltezzaDecrescente(int id) throws EccezioneIDNonPresente, EccezioneIDNonValido, EccezioneNessunaSquadra
     {
         Cestista[] vOrdinato;
         if(nSquadrePresenti==0)
@@ -298,7 +298,7 @@ public class Campionato implements Serializable
         {
             if(elencoSquadre[i].getIdSquadra()==id)
             {
-                vOrdinato=elencoSquadre[i].ordinaAltezzaDerescente();
+                vOrdinato=elencoSquadre[i].ordinaAltezzaDecrescente();
                 return vOrdinato;
             }            
         }
@@ -481,9 +481,23 @@ public class Campionato implements Serializable
         ObjectInputStream reader=new ObjectInputStream(new FileInputStream(nomeFile));
         camp=(Campionato)reader.readObject();
         reader.close();
+        Cestista.setNextID(camp.getNCestistiPresenti()+1);
         Squadra.setNextID(camp.getNSquadrePresenti()+1);
         return camp;
+    }  
+    
+    /**
+     * Metodo privato per la gestione delgi id
+     * Mancante nel diagramma delle classi poiché non ho UMlet installato sul pc e non posso modificarlo
+     * @return numero di cestisti presenti nel campionato
+     */
+    private int getNCestistiPresenti()
+    {
+        int n=0;
+        for(int i=0;i<getNSquadrePresenti();i++)
+        {
+            n+=elencoSquadre[i].getNCestistiPresenti();
+        }
+        return n;
     }
-    
-    
 }

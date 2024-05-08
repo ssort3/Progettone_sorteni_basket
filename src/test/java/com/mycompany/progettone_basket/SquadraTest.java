@@ -29,6 +29,7 @@ public class SquadraTest {
     private Cestista c;
     private Cestista c1;
     private Cestista c2;
+    private Cestista c3;
     private Squadra s4;
     private Squadra s5;
 
@@ -37,11 +38,41 @@ public class SquadraTest {
      * @throws EccezioneAltezza 
      */
     @BeforeAll
-    public static void Cestista() throws EccezioneAltezza
+    public static void inizio() throws EccezioneAltezza
     {
         s1=new Squadra("lakers",10);
         s2=new Squadra("heat",10);
         s3=new Squadra("lakers",10);
+    }
+    
+    /**
+     * Test del Costruttore della classe Squadra
+     * @throws Exception
+     */
+    @Test
+    public void testCostruttore() throws Exception
+    {
+        s4=new Squadra("ciao",10);
+        int atteso=0;
+        int attuale=s4.getNCestistiPresenti();
+        assertEquals(atteso,attuale);
+        atteso=10;
+        attuale=s4.getPunti();
+        assertEquals(atteso,attuale);
+        String nomeAtteso="ciao";
+        String nomeAttuale=s4.getNomeSquadra();
+        assertEquals(nomeAtteso,nomeAttuale);
+    }
+    
+    /**
+     * Test del Costruttore di copia della classe Squadra
+     * @throws Exception
+     */
+    @Test
+    public void testCostruttoreCopia() throws Exception
+    {
+        s4=new Squadra(s1);
+        assertEquals(s1,s4);
     }
     
     /**
@@ -394,20 +425,128 @@ public class SquadraTest {
            
     /**
      * Test of ordinaAltezzaCrescente method, of class Squadra.
+     * Test con altezze decrescenti
      */
     @org.junit.jupiter.api.Test
-    public void testOrdinaAltezzaCrescente() 
+    public void testOrdinaAltezzaCrescenteContrario() throws Exception
     {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c2);
+        s5.setCestista(c1);
+        s5.setCestista(c3);
+        v=s5.ordinaAltezzaCrescente();
+        Cestista[] atteso={c3,c1,c2};
+        assertArrayEquals(atteso,v);
+        
+    }
+    
+    /**
+     * Test of ordinaAltezzaCrescente method, of class Squadra.
+     * Test con altezze in disordine
+     */
+    @org.junit.jupiter.api.Test
+    public void testOrdinaAltezzaCrescenteDisordine() throws Exception
+    {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c1);
+        s5.setCestista(c2);
+        s5.setCestista(c3);
+        v=s5.ordinaAltezzaCrescente();
+        Cestista[] atteso={c3,c1,c2};
+        assertArrayEquals(atteso,v);
+        
+    }
+    
+    /**
+     * Test of ordinaAltezzaCrescente method, of class Squadra.
+     * Test con altezze già crescenti
+     */
+    @org.junit.jupiter.api.Test
+    public void testOrdinaAltezzaCrescenteOrdinate() throws Exception
+    {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c3);
+        s5.setCestista(c1);
+        s5.setCestista(c2);
+        v=s5.ordinaAltezzaCrescente();
+        Cestista[] atteso={c3,c1,c2};
+        assertArrayEquals(atteso,v);
         
     }
 
     /**
      * Test of ordinaAltezzaDerescente method, of class Squadra.
+     * Test con altezze già decrescenti
      */
     @org.junit.jupiter.api.Test
-    public void testOrdinaAltezzaDerescente() 
+    public void testOrdinaAltezzaDecrescenteOrdinate() throws Exception
     {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c2);
+        s5.setCestista(c1);
+        s5.setCestista(c3);
+        v=s5.ordinaAltezzaDecrescente();
+        Cestista[] atteso={c2,c1,c3};
+        assertArrayEquals(atteso,v);
         
     }
+    
+    /**
+     * Test of ordinaAltezzaCrescente method, of class Squadra.
+     * Test con altezze in disordine
+     */
+    @org.junit.jupiter.api.Test
+    public void testOrdinaAltezzaDecrescenteDisordine() throws Exception
+    {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c1);
+        s5.setCestista(c2);
+        s5.setCestista(c3);
+        v=s5.ordinaAltezzaDecrescente();
+        Cestista[] atteso={c2,c1,c3};
+        assertArrayEquals(atteso,v);
+        
+    }
+    
+    /**
+     * Test of ordinaAltezzaCrescente method, of class Squadra.
+     * Test con altezze crescenti
+     */
+    @org.junit.jupiter.api.Test
+    public void testOrdinaAltezzaDecrescenteContario() throws Exception
+    {
+        s5=new Squadra(s1);
+        Cestista[] v;
+        c1=new Cestista("due","zero",LocalDate.of(1,1,1),2);
+        c2=new Cestista("due","zerouno",LocalDate.of(1,1,1),2.01);
+        c3=new Cestista("uno","novenove",LocalDate.of(1,1,1),1.99);
+        s5.setCestista(c3);
+        s5.setCestista(c1);
+        s5.setCestista(c2);
+        v=s5.ordinaAltezzaDecrescente();
+        Cestista[] atteso={c2,c1,c3};
+        assertArrayEquals(atteso,v);
+        
+    }    
     
 }

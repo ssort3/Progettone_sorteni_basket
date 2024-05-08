@@ -22,6 +22,8 @@ public class CestistaTest {
     private static Cestista c1;
     private static Cestista c2;
     private Cestista c3;
+    private Cestista c4;
+    private Cestista c5;
     
     public CestistaTest() { 
     }
@@ -35,6 +37,40 @@ public class CestistaTest {
     {
         c1=new Cestista("luciano","pinna",LocalDate.of(1,1,1),2);
         c2=new Cestista("pierone","lao",LocalDate.of(1,1,1),2);
+    }
+    
+    /**
+     * Test del Costruttore della classe Cestista
+     * @throws Exception
+     */
+    @Test
+    public void testCostruttore() throws Exception
+    {
+        c5=new Cestista("lao","lao",LocalDate.of(2, 2,2),1.98);
+        String atteso="lao";
+        String attuale=c5.getNome();
+        assertEquals(atteso,attuale);
+        atteso="lao";
+        attuale=c5.getCognome();
+        assertEquals(atteso,attuale);
+        LocalDate dataAttesa=LocalDate.of(2, 2,2);
+        LocalDate dataAttuale=c5.getDataNascita();
+        assertEquals(dataAttesa,dataAttuale);
+        double hAttesa=1.98;
+        double hAttuale=c5.getAltezza();
+        assertEquals(hAttesa,hAttuale);
+        
+    }
+    
+    /**
+     * Test del Costruttore di copia della classe Cestista
+     * @throws Exception
+     */
+    @Test
+    public void testCostruttoreCopia() throws Exception
+    {
+        c4=new Cestista(c1);
+        assertEquals(c4,c1);
     }
         
     /**
